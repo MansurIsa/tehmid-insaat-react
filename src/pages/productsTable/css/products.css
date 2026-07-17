@@ -1,0 +1,61 @@
+.custom_file_input {
+    padding: 10px 16px;
+    border: 1px solid var(--gray12);
+    border-radius: 6px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+
+.product_movement_date {
+    display: flex;
+    align-items: center;
+    gap: 52px;
+    margin-bottom: 32px !important;
+}
+
+.product_movement_date p {
+    font-family: Poppins;
+    font-weight: 400;
+    font-size: 1.6rem;
+    line-height: 24px;
+    letter-spacing: 0%;
+    color: var(--gray11);
+}
+
+
+.image_preview_wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.change_image_btn {
+    padding: 6px 15px;
+    font-size: 14px;
+    background-color: var(--gray12);
+    border: 1px solid var(--gray12);
+    border-radius: 6px;
+    cursor: pointer;
+}
+.brand_list_buttons{
+    display: flex;
+    gap: 5px;
+    margin-top: 15px !important;
+    flex-wrap: wrap;
+    margin-bottom: 20px !important;
+}
+.brand_list_buttons button{
+    background: var(--gray9);
+    padding: 4px 8px;
+    border-radius: 6px;
+    /* color: var(--white); */
+    font-weight: 600;
+}
+
+
+.brand_list_buttons button.active {
+  background-color: var(--yellow);
+ 
+}

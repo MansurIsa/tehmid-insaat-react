@@ -1,0 +1,136 @@
+.sidebar_container {
+    width: 272px;
+    background-color: var(--mainFirst);
+    color: var(--white);
+    padding: 32px 16px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto; /* <- bu əlavə olundu */
+    scrollbar-width: thin; /* Firefox üçün */
+    scrollbar-color: rgba(255,255,255,0.5) transparent; /* Firefox üçün */
+}
+
+/* Optional: Chrome, Edge, Safari üçün scroll görünüşü */
+.sidebar_container::-webkit-scrollbar {
+    width: 6px;
+}
+.sidebar_container::-webkit-scrollbar-thumb {
+    background-color: rgba(255,255,255,0.5);
+    border-radius: 3px;
+}
+.sidebar_container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+.sidebar_menu {
+    margin-top: 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.sidebar_menu li{
+    padding: 12px;
+     display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.sidebar_menu li a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    /* font-family: Poppins; */
+    font-weight: 500;
+    font-size: 1.6rem;
+    line-height: 24px;
+    letter-spacing: 0%;
+    color: var(--white);
+}
+.sidebar_menu li span{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+.submenu_toggle {
+    cursor: pointer;
+}
+
+.submenu_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* .submenu_header.active {
+    background-color: var(--yellow);
+    color: var(--black);
+    border-radius: 5px;
+} */
+.submenu li a{
+    color: var(--white);
+    padding-left: 50px;
+}
+ .submenu li a.sub_active{
+    color: var(--yellow);
+    
+
+ }
+  /* .submenu li a{
+    color: var(--yellow) ;
+  } */
+.sidebar_menu li.active{
+     background-color: var(--yellow);
+    color: var(--white);
+    border-radius: 5px;
+    /* display: flex;
+    justify-content: space-between;
+    align-items: center; */
+}
+.log_out_admin{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start !important;
+    gap: 14px;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 1540px){
+    .sidebar_container{
+        width: 200px;
+    }
+}
+
+
+.sidebar_mobile_header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.sidebar_close{
+    display:none;
+    font-size:22px;
+    cursor:pointer;
+}
+
+/* MOBILE */
+
+@media screen and (max-width:576px){
+
+.sidebar_container{
+    transform:translateX(-100%);
+    transition:0.3s;
+    z-index:1000;
+}
+
+.sidebar_container.open{
+    transform:translateX(0);
+}
+
+.sidebar_close{
+    display:block;
+}
+
+}

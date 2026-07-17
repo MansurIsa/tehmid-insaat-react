@@ -1,0 +1,8 @@
+.customer_movement_end_products_price{
+    display: flex;
+    align-items: center;
+    width: 100% !important;
+    justify-content: center;
+    gap: 40px;
+    
+}

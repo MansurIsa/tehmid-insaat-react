@@ -1,0 +1,107 @@
+.contact_form {
+    /* background-color: var(--white); */
+}
+
+.contact_form_container form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 60px;
+    align-items: flex-start;
+}
+
+.contact_form_container p {
+    text-align: center;
+    font-weight: 400;
+    font-size: 2.4rem;
+    line-height: 100%;
+    letter-spacing: 0%;
+    margin-top: 12px;
+
+}
+
+.firstname_lastname_form,
+.email_phone_textarea_form {
+    display: flex;
+    gap: 116px;
+    align-items: center;
+}
+
+.email_phone_textarea_form {
+    align-items: flex-start;
+}
+
+.firstname_lastname_form div,
+.email_phone_form div,
+.textarea_label_form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 468px;
+}
+
+.firstname_lastname_form div input,
+.email_phone_textarea_form div input,
+.email_phone_textarea_form div textarea {
+    width: 100%;
+    border: 1px solid var(--gray2);
+    padding: 14px 16px;
+    border-radius: 12px;
+}
+
+.email_phone_form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.contact_form_container form button {
+    padding: 18px 61px;
+    border-radius: 12px;
+    font-weight: 400;
+    font-size: 1.8rem;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: var(--white);
+    background-color: var(--mainFirst);
+    /* margin-left: auto; */
+    transition: 0.5s ease-in-out;
+
+}
+.contact_form_container form button:hover{
+    opacity: 0.8;
+}
+@media screen and (max-width: 1100px) {
+
+    .firstname_lastname_form,
+    .email_phone_textarea_form {
+        gap: 36px;
+    }
+}
+
+@media screen and (max-width: 1010px) {
+
+    .firstname_lastname_form,
+    .email_phone_textarea_form {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .firstname_lastname_form div,
+    .email_phone_form div,
+    .textarea_label_form {
+        width: 100% !important;
+    }
+
+    .email_phone_form {
+        width: 100%;
+    }
+
+    .firstname_lastname_form div,
+    .email_phone_form div,
+    .textarea_label_form {
+
+        min-width: 100%;
+    }
+
+}

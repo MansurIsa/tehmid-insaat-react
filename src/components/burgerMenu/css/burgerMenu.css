@@ -1,0 +1,30 @@
+.burger_list{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+.burger_list li{
+    background-color: var(--gray4);
+    width: 100%;
+    text-align: center;
+    
+}
+.burger_list li a{
+    color: var(--white);
+    font-weight: 400;
+    font-size: 1.6rem;
+    line-height: 100%;
+    letter-spacing: 0%;
+    width: 100%;
+    display: block;
+    padding: 15px 0;
+}
+.burger_list li a.active-link {
+  color: var(--yellow);
+  font-weight: 600;
+}
+.burger_menu_container{
+    padding: 20px;
+    background-color: var(--mainFirst);
+}

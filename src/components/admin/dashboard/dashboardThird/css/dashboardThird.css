@@ -1,0 +1,128 @@
+table,
+td,
+th {
+
+    text-align: center;
+    font-size: 1.3rem !important;
+}
+
+thead {
+    border-bottom: 1px solid var(--gray12);
+}
+
+table {
+    border-collapse: collapse;
+    overflow-x: auto !important;
+}
+
+th {
+    font-size: 1.6rem;
+    min-width: 110px;
+    font-family: Poppins;
+    font-weight: 600;
+    line-height: 140%;
+    letter-spacing: 0%;
+    color: var(--gray11);
+
+}
+
+th,
+td {
+    padding: 10px 0;
+    width: 150px !important;
+}
+
+td {
+    font-size: 1.4rem;
+    height: 70px;
+    color: var(--mainFirst);
+    font-family: Poppins;
+    font-weight: 500;
+    line-height: 140%;
+    letter-spacing: 0%;
+}
+
+.dashboard_third_left {
+    border-radius: 12px;
+    background-color: var(--white);
+    padding: 16px 19px;
+    max-width: 673px;
+
+}
+
+.dashboard_third_left_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+     margin-bottom: 20px;
+}
+
+.dashboard_third_left_header h3 {
+    font-family: Poppins;
+    font-weight: 500;
+    font-size: 1.8rem;
+    line-height: 140%;
+    letter-spacing: 0%;
+    color: var(--gray11);
+   
+
+}
+
+
+
+
+.chart_container {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    background-color: var(--white);
+    padding: 20px;
+    border-radius: 12px;
+    max-width: 389px;
+}
+
+.chart_legend {
+    margin-left: 20px;
+}
+
+.chart_legend h3 {
+    margin-bottom: 10px;
+    color: var(--mainFirst);
+
+    font-family: Poppins;
+    font-weight: 500;
+    font-size: 1.8rem;
+    line-height: 140%;
+    letter-spacing: 0%;
+
+}
+
+.chart_legend_item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.chart_legend_color {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.chart_legend_name {
+    margin-right: 8px;
+}
+
+.chart_legend_value {
+    margin-right: 8px;
+}
+
+
+.dashboard_third_container {
+    display: flex;
+    margin-top: 48px !important;
+    margin-bottom: 48px !important;
+    gap: 42px;
+
+}

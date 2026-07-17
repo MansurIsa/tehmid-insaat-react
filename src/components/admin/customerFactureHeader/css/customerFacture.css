@@ -1,0 +1,284 @@
+.screen-only {
+  display: inline;
+}
+
+.print-only,
+.print-only-title {
+  display: none;
+}
+.print-only-title{
+  margin-bottom: 10px;
+}
+
+@media print {
+
+  /* Bu sütunları gizlət */
+  /* th:nth-child(1), */
+  th:nth-child(4),
+  th:nth-child(10),
+  /* td:nth-child(1), */
+  td:nth-child(4),
+  td:nth-child(10) {
+    display: none;
+  }
+
+ td{
+  padding: 0 !important;
+  height: 0 !important;
+ }
+
+
+  /* Artikil scrollunu deaktiv et */
+  .table_article_scroll {
+    white-space: normal !important;
+    overflow: visible !important;
+    max-width: none !important;
+  }
+
+  /* Çap zamanı yalnız əsas table və xülasə hissəsi görünsün */
+  .warehouse_submit,
+  .dashboard_end_pagination {
+    display: none !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .admin_container,
+  .admin_container * {
+    visibility: visible;
+  }
+
+  .admin_container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  .warehouse_summary div:last-child {
+    display: none !important;
+  }
+
+  th:nth-child(11),
+  td:nth-child(11) {
+    display: none !important;
+  }
+
+  .screen-only {
+    display: none !important;
+  }
+
+  .print-only {
+    display: table-cell !important;
+     text-align: center !important;
+  }
+  .print-only-arc{
+    display: inline !important;
+  }
+
+  .admin_header_search {
+    display: none !important;
+  }
+}
+
+
+.table_article_scroll {
+  max-width: 100px;
+  overflow-x: auto;
+  /* x oxuna scroll */
+  overflow-y: hidden;
+  /* y oxuna scroll olmasın */
+  /* display: block;       scroll-un işləməsi üçün vacibdir */
+  white-space: nowrap;
+  /* mətnin aşağı keçməsinin qarşısını alır */
+}
+
+.table_scroll_wrapper {
+  width: 100%;
+  overflow-x: auto !important;
+}
+
+
+@media print {
+
+  /* Yuxarıdakı sənin digər qaydaların */
+  th:nth-child(4),
+  th:nth-child(10),
+  td:nth-child(4),
+  td:nth-child(10) {
+    display: none;
+  }
+
+  td {
+    padding: 0 !important;
+    height: 0 !important;
+  }
+
+  .table_article_scroll {
+    white-space: normal !important;
+    overflow: visible !important;
+    max-width: none !important;
+  }
+
+  .warehouse_submit,
+  .dashboard_end_pagination {
+    display: none !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .admin_container,
+  .admin_container * {
+    visibility: visible;
+  }
+
+  .admin_container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  .warehouse_summary div:last-child {
+    display: none !important;
+  }
+
+  th:nth-child(11),
+  td:nth-child(11) {
+    display: none !important;
+  }
+
+  .screen-only {
+    display: none !important;
+  }
+
+  .print-only {
+    display: table-cell !important;
+    text-align: center !important;
+  }
+  .print-only-title{
+    display: block;
+    text-align: center;
+  }
+
+  .print-only-arc {
+    display: inline !important;
+  }
+
+  .admin_header_search {
+    display: none !important;
+  }
+
+  /* Çap zamanı border əlavə et */
+  .admin_container table {
+    border-collapse: collapse !important;
+    width: 100%;
+  }
+
+  .admin_container table th,
+  .admin_container table td {
+    border: 2px solid black !important; /* Qalın border */
+    padding: 8px !important;
+    text-align: center !important;
+  }
+
+  /* Gizlədilən elementlərin border-ləri görünməsin */
+  th:nth-child(4),
+  th:nth-child(10),
+  td:nth-child(4),
+  td:nth-child(10),
+  th:nth-child(11),
+  td:nth-child(11) {
+    border: none !important;
+  }
+}
+
+
+
+@media print {
+
+  /* Yalnız lazım olan elementləri göstəririk */
+  body * {
+    visibility: hidden;
+  }
+
+  .admin_container,
+  .admin_container * {
+    visibility: visible;
+  }
+
+  .admin_container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  /* Table border və format */
+  .admin_container table {
+    border-collapse: collapse !important;
+    width: 100%;
+    table-layout: fixed; /* Hüceyrələr sabit nizamlanır */
+  }
+
+  .admin_container table th,
+  .admin_container table td {
+    border: 2px solid black !important; /* Qalın border */
+    padding: 8px !important;
+    text-align: center !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Sütunlara spesifik enlər */
+  .admin_container table th.print_column_number,
+  .admin_container table td.print_column_number {
+    width: 50px;
+  }
+
+  .admin_container table th:nth-child(3), /* Artikl */
+  .admin_container table td:nth-child(3) {
+    width: 80px;
+  }
+
+  .admin_container table th:nth-child(4),
+  .admin_container table td:nth-child(4),
+  .admin_container table th:nth-child(5),
+  .admin_container table td:nth-child(5),
+  .admin_container table th:nth-child(6),
+  .admin_container table td:nth-child(6),
+  .admin_container table th:nth-child(7),
+  .admin_container table td:nth-child(7),
+  .admin_container table th:nth-child(8),
+  .admin_container table td:nth-child(8),
+  .admin_container table th:nth-child(9),
+  .admin_container table td:nth-child(9),
+  .admin_container table th:nth-child(10),
+  .admin_container table td:nth-child(10),
+  .admin_container table th:nth-child(11),
+  .admin_container table td:nth-child(11) {
+    width: auto; /* Digər hüceyrələr minimal enə sahib olacaq */
+    max-width: 100px; /* Opsional: çox genişlənməsini maneə törədir */
+  }
+
+  /* Məhsul adı maksimum sahəni tutur */
+  .admin_container table th:nth-child(2),
+  .admin_container table td:nth-child(2) {
+    width: auto !important;
+    max-width: none !important;
+    white-space: normal; /* Sətirə sığmayan mətni sətirdə göstər */
+    text-align: left;
+  }
+
+  /* Digər lazımsız elementləri gizlət */
+  .warehouse_submit,
+  .dashboard_end_pagination,
+  .admin_header_search {
+    display: none !important;
+  }
+}

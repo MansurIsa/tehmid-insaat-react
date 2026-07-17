@@ -1,0 +1,105 @@
+.about_banner_container {
+    height: 85vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--white);
+}
+.about_banner_container img{
+    max-width: 400px;
+    margin-top: 50px;
+    height: 90%;
+}
+.about_banner_left {
+    width: 50%;
+    padding-left: 120px;
+}
+
+.about_banner_left h1 {
+    color: var(--black);
+    font-weight: 400;
+    font-size: 3.6rem;
+    line-height: 100%;
+    letter-spacing: 0%;
+}
+
+.about_banner_left p {
+    font-weight: 400;
+    font-size: 2rem;
+    /* line-height: 100%;
+    letter-spacing: 0%; */
+    color: var(--black);
+    margin-top: 24px;
+    margin-bottom: 32px;
+
+}
+
+.about_banner_left button {
+    font-weight: 400;
+    font-size: 1.8rem;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: var(--white);
+    background-color: var(--mainFirst);
+    border-radius: 12px;
+    padding: 18px 59px;
+    transition: 0.5s ease-in-out;
+
+}
+.about_banner_left button:hover{
+    opacity: 0.8;
+}
+ .about_banner_right{
+      
+        background-size: cover !important;
+        background-repeat: no-repeat !important;
+        background-color: red;
+        
+    }
+@media screen and (max-width: 992px) {
+    .about_banner_container{
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: 0px;
+        /* height: 70vh; */
+        height: auto;
+        padding-top: 40px !important;
+        padding-bottom: 40px;
+    }
+    .about_banner_left{
+        width: 100%;
+    }
+    .about_banner_right{
+        width: 80% !important;
+        height: 400px !important;
+        background-size: cover !important;
+        background-repeat: no-repeat !important;
+        /* background-size: contain !important; */
+        
+    }
+}
+
+@media screen and (max-width: 650px) {
+    .about_banner_left h1 {
+    font-size: 2.5rem;
+}
+
+.about_banner_left p {
+    font-size: 1.5rem;
+
+}
+
+.about_banner_left button {
+    font-size: 1.5rem;
+    padding: 12px 30px;
+    
+    
+}
+
+.about_banner_left{
+    padding: 0 60px;
+}
+.about_banner_container img{
+    max-width: 300px;
+}
+}

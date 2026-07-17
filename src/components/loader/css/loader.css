@@ -1,0 +1,49 @@
+.loader-wrapper {
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #2c3e50, #4ca1af);
+  overflow: hidden;
+  position: relative;
+}
+
+.car {
+  font-size: 40px;
+  position: absolute;
+  top: 200px;
+  left: 100px;
+  z-index: 10;
+}
+
+.smoke-container {
+  position: absolute;
+  bottom: 20px;
+  left: 50px;
+  pointer-events: none;
+}
+
+.smoke {
+  width: 15px;
+  height: 15px;
+  background-color: #bbb;
+  border-radius: 50%;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  opacity: 0.7;
+  filter: blur(2px);
+}
+
+.loader_container {
+  height: 100vh;
+  background: linear-gradient(to top, #0f2027, #203a43, #2c5364);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 99999;
+}

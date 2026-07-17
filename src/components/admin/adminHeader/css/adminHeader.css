@@ -1,0 +1,131 @@
+.admin_header_container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 10vh;
+    background-color: var(--white);
+}
+
+.admin_header_left {
+    display: flex;
+    align-items: center;
+    gap: 42px;
+}
+
+.admin_header_left h1 {
+    font-weight: 500;
+    font-size: 2rem;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: var(--gray11);
+     font-family: Poppins;
+}
+
+.admin_header_search {
+    border: 1px solid var(--gray9);
+    /* min-width: 478px; */
+    display: flex;
+    align-items: center;
+    background-color: var(--white);
+    border-radius: 12px;
+    padding: 12px;
+    gap: 8px;
+    min-width: 90%;
+}
+
+
+.admin_header_search input {
+    background: none;
+    border: none;
+    outline: none;
+    width: 85%;
+    font-weight: 400;
+    font-size: 1.6rem;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: var(--gray4);
+     font-family: Poppins;
+
+}
+
+.admin_header_right {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.admin_header_profile {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.admin_header_profile img {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    /* object-fit: cover; */
+}
+
+.admin_header_notification {
+    position: relative;
+}
+
+.admin_header_notification span {
+    position: absolute;
+    right: -5px;
+    top: -10px;
+     font-family: Poppins;
+}
+.admin_header_profile h3 {
+    font-family: Poppins;
+    font-weight: 500;
+    font-size: 1.6rem;
+    line-height: 24px;
+    letter-spacing: 0px;
+    vertical-align: middle;
+    color: var(--mainFirst);
+}
+
+.admin_header_profile p {
+    font-family: Poppins;
+    font-weight: 400;
+    font-size: 1.4rem;
+    line-height: 20px;
+    letter-spacing: 0px;
+    color: var(--mainFirst);
+}
+
+.admin_header_profile_icon{
+    font-size: 3rem;
+}
+
+@media screen and (max-width: 600px){
+    .admin_header_profile h3 {
+   
+    font-size: 1.3rem;
+   
+}
+
+.admin_header_profile p {
+    font-size: 1.1rem;
+   
+}
+
+.admin_header_profile {
+   
+    gap: 10px;
+}
+
+.admin_header_profile img {
+    width: 30px;
+    height: 30px;
+    border-radius: 12px;
+    /* object-fit: cover; */
+}
+.admin_header_left h1 {
+    font-size: 1.6rem;
+  
+}
+
+}

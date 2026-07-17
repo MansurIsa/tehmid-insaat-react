@@ -1,0 +1,32 @@
+
+.sales_dates_inputs{
+    max-width: 400px;
+    
+}
+.sales_dates_inputs div{
+    display: flex;
+    align-items: center;
+}
+.sales_dates_inputs div input{
+    background: none;
+}
+.table_update{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    width: 100% !important;
+}
+.table_update svg{
+    font-size: 2.4rem;
+    cursor: pointer;
+}
+.table_update svg:nth-of-type(1){
+    color: var(--red);
+}
+.table_update svg:nth-of-type(2){
+    color: var(--gray8);
+}
+.custom_table_sales{
+    margin-top: 30px;
+}

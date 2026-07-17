@@ -1,0 +1,179 @@
+.about_superiors_container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(384px, 1fr));
+    gap: 24px;
+    margin-top: 32px !important;
+    margin-bottom: 111px !important;
+}
+
+.about_superiors_card {
+    min-width: 384px;
+    background-color: var(--white);
+    border-radius: 20px;
+    padding: 36px 24px 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+transition: 0.5s ease-in-out;
+}
+.about_superiors_card:hover{
+   transform: translateY(-10px);
+}
+.about_superiors_card div {
+    padding: 24px;
+    background-color: var(--mainFirst);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.about_superiors_card h3 {
+    margin-top: 28px;
+    margin-bottom: 16px;
+    font-weight: 400;
+    font-size: 2.4rem;
+    line-height: 32px;
+    letter-spacing: 0%;
+    text-align: center;
+    color: var(--gray3);
+
+}
+
+.about_superiors_card p {
+    font-weight: 400;
+    font-size: 1.6rem;
+    line-height: 100%;
+    letter-spacing: 0%;
+    text-align: center;
+    color: var(--gray4);
+}
+
+.about_counter_container {
+    max-width: 749px;
+    margin-left: auto;
+    margin-right: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(183px, 1fr));
+    gap: 100px;
+    padding-top: 45px;
+    padding-bottom: 187px;
+}
+
+.about_counter_card {
+    min-width: 183px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    align-items: center;
+}
+
+.about_counter_card span {
+    font-weight: 400;
+    font-size: 3.6rem;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: var(--yellow);
+}
+
+.about_counter_card p {
+    font-weight: 400;
+    font-size: 2.4rem;
+    line-height: 24px;
+    letter-spacing: 0%;
+    color: var(--mainFirst);
+}
+
+.about_cooperation {
+    background-color: var(--white);
+    height: 340px;
+    margin-bottom: 100px;
+}
+
+.about_cooperation_left {
+    padding-top: 39px;
+    padding-bottom: 133px;
+}
+
+.about_cooperation_left h3 {
+    font-weight: 400;
+    font-size: 3.6rem;
+    line-height: 44px;
+    letter-spacing: 0%;
+    color: var(--mainFirst);
+
+}
+
+.about_cooperation_left p {
+    font-weight: 400;
+    font-size: 1.8rem;
+    line-height: 28px;
+    letter-spacing: 0%;
+    color: var(--gray4);
+    margin-top: 16px;
+    margin-bottom: 24px;
+
+}
+
+.about_cooperation_left button {
+    font-weight: 400;
+    font-size: 1.8rem;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: var(--white);
+    padding: 18px 40px;
+    background-color: var(--mainFirst);
+    border-radius: 12px;
+    transition: 0.5s ease-in-out;
+}
+.about_cooperation_left button:hover{
+    opacity: 0.8;
+}
+.about_cooperation_right {
+    clip-path: circle(55.9% at 50% 51%);
+    background-size: cover !important;
+}
+
+.about_cooperation_container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+@media screen and (max-width: 992px) {
+    .about_cooperation_container {
+        flex-direction: column;
+
+
+    }
+
+    .about_cooperation {
+        height: auto;
+    }
+
+    .about_cooperation_right {
+        clip-path: polygon(0 0, 100% 0%, 100% 100%, 0% 100%);
+        width: 100% !important;
+
+
+    }
+    .about_cooperation_left{
+        padding-bottom: 30px;
+        
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .about_superiors_container {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+
+    .about_superiors_card {
+        min-width: 300px;
+
+
+    }
+
+}

@@ -1,0 +1,136 @@
+.service_top_container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(344px, 1fr));
+    gap: 84px;
+    margin-bottom: 120px;
+}
+
+.service_top_card {
+    min-width: 344px;
+    height: 340px;
+    border-radius: 12px;
+    transition: 0.5s ease-in-out;
+}
+.service_top_card:hover{
+    transform: translateY(-10px);
+}
+
+.service_top_card_shadow {
+    background: var(--gray6);
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.service_top_card h3 {
+    font-weight: 400;
+    font-size: 3.2rem;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: var(--white);
+    text-align: center;
+}
+
+.service_top_parent_container p {
+    max-width: 994px;
+    margin: 0px auto 72px;
+    font-weight: 400;
+    font-size: 2.4rem;
+    /* line-height: 100%;
+    letter-spacing: 0%; */
+    text-align: center;
+
+}
+
+.service_bottom_cards {
+    max-width: 1061px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(505px, 1fr));
+    gap: 51px;
+    margin-top: 48px;
+    padding-bottom: 100px;
+}
+
+.service_bottom_card {
+    min-width: 505px;
+    background-color: var(--white);
+    border-radius: 9px;
+    padding: 25px 0 25px 28px;
+    display: flex;
+    align-items: center;
+    transition: 0.5s ease-in-out;
+}
+.service_bottom_card:hover{
+    transform: translateY(-10px);
+}
+.service_bottom_card img {
+    width: 30%;
+}
+
+.service_bottom_card h3 {
+    font-weight: 700;
+    font-size: 2.4rem;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: var(--gray7);
+}
+
+.service_bottom_card p {
+    font-weight: 400;
+    font-size: 1.6rem;
+    line-height: 100%;
+    letter-spacing: 0%;
+    margin-top: 17px;
+    color: var(--gray8);
+
+}
+
+
+@media screen and (max-width: 650px) {
+    .service_top_parent_container p {
+        font-size: 1.8rem;
+        line-height: 25px;
+        text-align: center;
+
+    }
+
+    .service_top_container {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+
+    .service_top_card {
+        min-width: 300px;
+    }
+
+    .service_bottom_cards {
+        grid-template-columns: repeat(auto-fill, minmax(305px, 1fr));
+    }
+
+    .service_bottom_card {
+        min-width: 305px;
+    }
+
+    .service_bottom_card h3 {
+
+        font-size: 1.8rem;
+    }
+
+    .service_bottom_card p {
+        
+        font-size: 1.2rem;
+        
+
+    }
+    .service_top_card h3 {
+    font-size: 2.2rem;
+   
+}
+
+
+
+}

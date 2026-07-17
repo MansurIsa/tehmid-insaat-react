@@ -1,0 +1,68 @@
+.header_icons_container{
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+.header_icons_container a{
+    background-color: var(--white);
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+.header_icons_container a span{
+  position: absolute;
+  right: -10px;
+  top: -15px;
+  background-color: var(--yellow);
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--black);
+}
+.burger_icon{
+    display: none;
+}
+.user_info_container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background-color: var(--white);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.user_info_container:hover {
+  background-color: var(--gray2);
+}
+
+.user_info_container p {
+  margin: 0;
+  font-size: 1.4rem;
+  color: var(--gray5);
+  font-weight: 500;
+}
+
+.user_info_container svg {
+  color: var(--gray5);
+  font-size: 1.8rem;
+  transition: transform 0.3s ease;
+}
+
+.user_info_container:hover svg {
+  transform: rotate(-20deg);
+}
+
+@media screen and (max-width: 840px){
+    .burger_icon{
+        display: block ;
+    }
+}

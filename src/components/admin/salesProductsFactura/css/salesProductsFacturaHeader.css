@@ -1,0 +1,26 @@
+.sales_products_factura_header input {
+    padding: 14px 16px;
+    background: none;
+    border-radius: 12px;
+    border: 1px solid var(--gray12);
+    font-family: Poppins;
+    font-weight: 400;
+    font-size: 1.4rem;
+    line-height: 20px;
+    letter-spacing: 0%;
+
+}
+.sales_products_factura_btns{
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+.sales_products_factura_btns button:last-child{
+    background-color: var(--mainFirst);
+}
+
+@media screen and (max-width: 768px){
+    .sales_products_factura_btns{
+    flex-direction: column;
+}
+}

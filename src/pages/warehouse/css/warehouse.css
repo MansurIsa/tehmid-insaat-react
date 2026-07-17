@@ -1,0 +1,197 @@
+/* Ana konteyner */
+.warehouse_page {
+    padding: 20px;
+    font-family: Poppins;
+    background-color: var(--white);
+    border-radius: 12px;
+
+}
+
+/* Axtarış inputu */
+.warehouse_search input {
+    width: 100%;
+    max-width: 500px;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid var(--gray4);
+    outline: none;
+}
+
+/* Məzmun bölməsi */
+.warehouse_content {
+    display: flex;
+    margin-top: 20px;
+    align-items: flex-start;
+    padding-top: 20px;
+    gap: 20px;
+}
+
+/* Sol tərəfdəki markalar siyahısı */
+.warehouse_sidebar {
+    width: 150px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+}
+.warehouse_sidebar input{
+      background: none;
+    border: 1px solid var(--gray4);
+    outline: none;
+    font-weight: 400;
+    font-size: 1.6rem;
+  
+    color: var(--gray4);
+     font-family: Poppins;
+     padding: 5px 10px;
+     border-radius: 12px;
+     width: 100%;
+
+}
+.warehouse_sidebar select{
+    padding: 12px;
+    border-radius: 12px;
+    background: none;
+    border: 1px solid var(--gray12);
+    font-family: Poppins;
+    font-weight: 400;
+    font-size: 1.6rem;
+   
+}
+.warehouse_sidebar strong {
+    display: block;
+    background-color: var(--gray12);
+    padding: 12px 30px;
+
+    font-family: Poppins;
+    font-weight: 500;
+    font-size: 1.6rem;
+    line-height: 24px;
+    letter-spacing: 0%;
+    color: var(--gray11);
+
+}
+
+.sidebar_brand {
+    padding: 12px 30px;
+    cursor: pointer;
+    font-family: Poppins;
+    font-weight: 400;
+    font-size: 1.6rem;
+    line-height: 24px;
+    letter-spacing: 0%;
+    vertical-align: middle;
+    color: var(--gray11);
+
+}
+
+/* Cədvəl */
+.warehouse_table_wrapper {
+    /* flex: 1; */
+    /* background: white; */
+    border-radius: 8px;
+    overflow-x: auto !important;
+}
+
+.warehouse_table {
+    width: 100%;
+    border-collapse: collapse;
+    
+}
+
+.warehouse_table thead th {
+    font-family: Poppins;
+    font-weight: 500;
+    font-size: 1.6rem;
+    line-height: 24px;
+    letter-spacing: 0%;
+    color: var(--gray11);
+}
+
+.warehouse_table tbody td {
+    font-family: Poppins;
+    font-weight: 400;
+    font-size: 1.6rem;
+    line-height: 24px;
+    letter-spacing: 0%;
+    vertical-align: middle;
+    color: var(--gray11);
+}
+
+
+
+/* Məbləğ hissəsi */
+.warehouse_summary {
+    display: flex;
+    /* flex-direction: column; */
+    gap: 12px;
+    margin-top: 20px;
+    font-size: 14px;
+    /* align-items: flex-end; */
+    flex-wrap: wrap;
+}
+
+.warehouse_summary div {
+    display: flex;
+    gap: 12px;
+}
+
+.warehouse_summary label {
+    font-family: Poppins;
+    font-weight: 500;
+    font-size: 1.6rem;
+    line-height: 24px;
+    letter-spacing: 0%;
+    vertical-align: middle;
+    padding: 19px 76px;
+    border: 1px solid var(--gray12)
+}
+
+.warehouse_summary span {
+    font-family: Poppins;
+    font-weight: 400;
+    font-size: 1.6rem;
+    line-height: 24px;
+    letter-spacing: 0%;
+    vertical-align: middle;
+    padding: 19px 50px;
+    border: 1px solid var(--gray12);
+
+}
+
+/* Button */
+.warehouse_submit {
+    margin-top: 25px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.save_btn {
+    background-color: var(--yellow);
+    border: none;
+    padding: 10px 72px;
+    border-radius: 8px;
+    font-family: Arial;
+    font-weight: 400;
+    font-size: 2rem;
+    line-height: 28px;
+    letter-spacing: 0%;
+
+}
+
+.save_btn:hover {
+    background-color: #e6be2f;
+}
+
+th,
+td {
+    border: 1px solid var(--gray12);
+}
+
+.quantity_input {
+  width: 70px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--gray12);
+  font-size: 1.6rem;
+}

@@ -1,0 +1,16 @@
+.logo_header img{
+    width: 100px;
+    object-fit: cover;
+}
+.logo_header_admin{
+    display: flex;
+    justify-content: center;
+}
+.logo_header_admin img{
+    height: 100px;
+}
+@media screen and (max-width: 576px) {
+  .logo_header img{
+    width: 80px;
+}
+}

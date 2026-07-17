@@ -1,0 +1,57 @@
+.price_input{
+     width: 70px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--gray12);
+  font-size: 1.6rem;
+}
+
+.input_error {
+  border: 1px solid var(--red) !important;
+}
+
+.input_error_text {
+  color: var(--red);
+  font-size: 1.2rem;
+  margin-top: 4px;
+}
+.left_box_mb{
+  margin-bottom: 40px;
+}
+.warehouse_table_wrapper{
+  margin-top: 20px;
+}
+
+td select{
+  border: 1px solid var(--gray12);
+  padding: 5px;
+  border-radius: 6px;
+  font-size: 1.8rem;
+}
+
+.input-error {
+  border: 1px solid var(--red) !important;
+}
+.quantity_input.error_input {
+  border: 2px solid var(--red);
+}
+
+
+/* Global CSS faylına əlavə edin */
+.brand-btn.active {
+  background-color: #007bff !important;
+  color: white !important;
+  border-color: #007bff !important;
+}
+
+/* Chrome, Safari, Edge */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}

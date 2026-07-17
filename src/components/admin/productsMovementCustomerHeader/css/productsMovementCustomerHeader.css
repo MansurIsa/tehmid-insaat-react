@@ -1,0 +1,47 @@
+.products_movement_customer_header {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-bottom: 24px;
+}
+
+.products_movement_customer_header div p {
+    font-family: Poppins;
+    font-weight: 500;
+    font-size: 1.6rem;
+    line-height: 24px;
+    letter-spacing: 0%;
+    color: var(--gray11);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.products_movement_customer_header div p span {
+    font-family: Poppins;
+    font-weight: 400;
+    font-size: 1.4rem;
+    line-height: 24px;
+    letter-spacing: 0%;
+    color: var(--gray11);
+}
+
+.products_movement_customer_header div {
+    display: flex;
+    gap: 63px;
+    align-items: center;
+}
+
+.products_movement_customer_header div select {
+    padding: 12px;
+    border-radius: 12px;
+    background: none;
+    border: 1px solid var(--gray12);
+    font-family: Poppins;
+    font-weight: 400;
+    font-size: 1.6rem;
+    line-height: 24px;
+    letter-spacing: 0%;
+    width: 318px;
+
+}

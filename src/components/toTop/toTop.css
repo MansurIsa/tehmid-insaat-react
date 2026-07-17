@@ -1,0 +1,22 @@
+.toTopBtn {
+  position: fixed;
+  right: 25px;
+  bottom: 75px;
+  background: #ff4500;
+  border: none;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.3s ease;
+  z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.toTopBtn:hover {
+  background: #e03f00;
+  transform: translateY(-3px);
+}

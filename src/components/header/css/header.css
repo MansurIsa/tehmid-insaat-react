@@ -1,0 +1,27 @@
+.header_container{
+    background-color: var(--mainFirst);
+    height: 15vh;
+    display: flex;
+    /* align-items: center; */
+    
+}
+.header_head_container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.nav_list {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+}
+
+@media screen and (max-width: 840px) {
+  .header_container{
+    height: 12vh;
+    
+    
+}
+}

@@ -1,0 +1,96 @@
+.login_container {
+    border-radius: 12px;
+    padding: 90px 0;
+    background-color: var(--white);
+
+}
+
+.login_container h1 {
+    font-weight: 400;
+    font-size: 2.8rem;
+    line-height: 100%;
+    letter-spacing: 0%;
+    text-align: center;
+    color: var(--mainFirst);
+    margin-bottom: 50px;
+
+}
+
+.login_container form {
+    max-width: 656px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 30px;
+}
+
+.login_container form div {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.login_container form div label {
+    font-weight: 400;
+    font-size: 1.6rem;
+    line-height: 24px;
+    letter-spacing: 0%;
+    color: var(--mainFirst);
+}
+
+.login_container form div input {
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--gray2);
+    width: 100%;
+    font-weight: 400;
+    font-size: 1.6rem;
+    line-height: 20px;
+    letter-spacing: 0%;
+
+}
+.login_container form button{
+      font-weight: 400;
+    font-size: 1.8rem;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: var(--white);
+    padding: 14px 25px;
+    background-color: var(--mainFirst);
+    border-radius: 12px;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+}
+
+@media screen and (max-width: 1250px){
+.login_container {
+    padding: 90px 0 !important;
+    margin: 0 20px !important;
+
+}
+}
+
+@media screen and (max-width: 750px){
+    .login_container form {
+    max-width: 480px;
+ 
+}
+}
+
+@media screen and (max-width: 550px){
+    .login_container form {
+    max-width: 380px;
+ 
+}
+}
+
+@media screen and (max-width: 450px){
+    .login_container form {
+    max-width: 310px;
+ 
+}
+}

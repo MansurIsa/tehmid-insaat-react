@@ -1,0 +1,14 @@
+.custom_table{
+    width: 100% ;
+    margin-bottom: 32px;
+}
+.customer_icon {
+    display: flex;
+    align-items: center;
+    width: 100% !important;
+    justify-content: center;
+    gap: 52px;
+}
+.customer_icon svg{
+    cursor: pointer;
+}

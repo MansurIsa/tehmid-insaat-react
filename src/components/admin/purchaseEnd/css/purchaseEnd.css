@@ -1,0 +1,188 @@
+.status.stocked {
+    color: var(--green);
+    font-weight: 500;
+}
+
+.status.waiting {
+    color: var(--yellow);
+    font-weight: 500;
+}
+
+.status.unknown {
+    color: var(--gray10);
+}
+
+
+.custom_table.purchase_table_retrive th,
+.custom_table.purchase_table_retrive td {
+    white-space: nowrap;
+    /* text sətirdə qalacaq, sətirə sığmayanda scroll olacaq */
+    padding: 8px 10px;
+    /* default padding-i azaldır */
+    font-size: 1.4rem;
+    /* font-u kiçildirsən */
+    text-align: center;
+    /* mərkəzləşdir */
+}
+
+/* Hər sütun üçün fərdi genişlik vermək istəyirsənsə */
+.custom_table.purchase_table_retrive th:nth-child(1),
+.custom_table.purchase_table_retrive td:nth-child(1) {
+    width: 120px;
+}
+
+/* Məhsul adı */
+.custom_table.purchase_table_retrive th:nth-child(2),
+.custom_table.purchase_table_retrive td:nth-child(2) {
+    width: 80px;
+}
+
+/* Artikl */
+.custom_table.purchase_table_retrive th:nth-child(3),
+.custom_table.purchase_table_retrive td:nth-child(3) {
+    width: 100px;
+}
+
+/* Brend */
+.custom_table.purchase_table_retrive th:nth-child(4),
+.custom_table.purchase_table_retrive td:nth-child(4) {
+    width: 60px;
+}
+
+/* Miqdar */
+.custom_table.purchase_table_retrive th:nth-child(5),
+.custom_table.purchase_table_retrive td:nth-child(5) {
+    width: 80px;
+}
+
+/* Alış Qiyməti */
+.custom_table.purchase_table_retrive th:nth-child(6),
+.custom_table.purchase_table_retrive td:nth-child(6) {
+    width: 80px;
+}
+
+/* Maya Dəyəri */
+.custom_table.purchase_table_retrive th:nth-child(7),
+.custom_table.purchase_table_retrive td:nth-child(7) {
+    width: 80px;
+}
+
+/* Satış Qiyməti */
+.custom_table.purchase_table_retrive th:nth-child(8),
+.custom_table.purchase_table_retrive td:nth-child(8) {
+    width: 80px;
+}
+
+/* Endirimli Qiymət */
+.custom_table.purchase_table_retrive th:nth-child(9),
+.custom_table.purchase_table_retrive td:nth-child(9) {
+    width: 70px;
+}
+
+/* Status */
+.custom_table.purchase_table_retrive th:nth-child(10),
+.custom_table.purchase_table_retrive td:nth-child(10) {
+    width: 120px;
+}
+
+/* Alış Tarixi */
+.custom_table.purchase_table_retrive th:nth-child(11),
+.custom_table.purchase_table_retrive td:nth-child(11) {
+    width: 80px;
+}
+
+/* Düzəliş/Sil */
+
+/* Optional: Table scroll əlavə etmək */
+.purchase_table_retrive {
+    overflow-x: auto;
+    display: block;
+}
+
+
+/* purchaseEnd.css */
+
+ .purchase_table_retrive th:nth-child(1),
+  .purchase_table_retrive td:nth-child(1){
+    display: none;
+  }
+
+@media print {
+
+    .purchase_table_retrive th:nth-child(1),
+    .purchase_table_retrive th:nth-child(2),
+    .purchase_table_retrive th:nth-child(3),
+    .purchase_table_retrive th:nth-child(4),
+     .purchase_table_retrive th:nth-child(5),
+     .purchase_table_retrive th:nth-child(6),
+    .purchase_table_retrive td:nth-child(1),
+    .purchase_table_retrive td:nth-child(2),
+    .purchase_table_retrive td:nth-child(3),
+    .purchase_table_retrive td:nth-child(4),
+     .purchase_table_retrive td:nth-child(5),
+     .purchase_table_retrive td:nth-child(6)
+      {
+        display: table-cell;
+    }
+
+    
+    .purchase_table_retrive th:nth-child(7),
+    .purchase_table_retrive th:nth-child(8),
+    .purchase_table_retrive th:nth-child(9),
+    .purchase_table_retrive th:nth-child(10),
+    .purchase_table_retrive th:nth-child(11),
+    .purchase_table_retrive th:nth-child(12),
+    .purchase_table_retrive td:nth-child(7),
+    .purchase_table_retrive td:nth-child(8),
+    .purchase_table_retrive td:nth-child(9),
+    .purchase_table_retrive td:nth-child(10),
+    .purchase_table_retrive td:nth-child(11),
+    .purchase_table_retrive td:nth-child(12)
+    {
+        display: none;
+    }
+    .print_column_summary{
+        display: flex;
+    }
+    .admin_header_container{
+        display: none;
+    }
+
+     .purchase_table_retrive {
+        border-collapse: collapse; /* Hüceyrələr arasındakı boşluğu aradan qaldır */
+    }
+
+    /* Yalnız çap olunan sütunlara border ver */
+    .purchase_table_retrive th:nth-child(-n+6),
+    .purchase_table_retrive td:nth-child(-n+6) {
+        border: 2px solid black; /* Qalın border */
+        padding: 8px 10px;
+        text-align: center;
+    }
+
+    /* Gizlədilən sütunlar border olmadan qalır */
+    .purchase_table_retrive th:nth-child(n+7),
+    .purchase_table_retrive td:nth-child(n+7) {
+        display: none;
+    }
+
+    .print_column_summary {
+        display: flex;
+    }
+
+    .admin_header_container {
+        display: none;
+    }
+
+    /* Brauzerlərdə rəng və borderin itməməsi üçün */
+    .purchase_table_retrive th,
+    .purchase_table_retrive td {
+        -webkit-print-color-adjust: exact;
+    }
+}
+
+.print_column_number {
+    width: 50px;
+    min-width: 50px; /* optional, daha sabit olmaq üçün */
+    max-width: 50px; /* optional */
+}

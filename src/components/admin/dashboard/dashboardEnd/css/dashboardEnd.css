@@ -1,0 +1,73 @@
+.dashboard_end_pagination {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 16px;
+    list-style: none;
+    padding: 0;
+    margin-top: 32px;
+
+}
+
+.dashboard_end_page,
+.dashboard_end_arrow {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 1px solid var(--gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dashboard_end_active {
+    background-color: var(--yellow);
+    color: var(--white);
+    border: none;
+
+}
+
+.dashboard_end_page_link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.dashboard_end_container {
+    padding-bottom: 78px;
+    margin-top: 24px !important;
+    
+}
+
+.custom_table {
+    background-color: var(--white);
+    border-radius: 12px;
+}
+
+.custom_table th,
+.custom_table td {
+    border: 1px solid var(--gray12);
+    /* Hüceyrə sərhədləri olsun */
+}
+
+.custom_table td {
+    font-family: Poppins;
+    font-weight: 400;
+    font-size: 1.6rem;
+    line-height: 24px;
+    letter-spacing: 0%;
+    vertical-align: middle;
+
+}
+
+.over {
+    color: var(--red2);
+}
+
+.runs_out {
+    color: var(--yellow);
+}
+
+.dashboard_end_table{
+    margin-top: 20px;
+}

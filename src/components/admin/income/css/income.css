@@ -1,0 +1,76 @@
+.income_chart_container {
+    background-color: var(--white);
+    border-radius: 12px;
+    padding: 12px 24px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+    min-width: 100%;
+    max-width: 768px;
+}
+
+.income_chart_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.income_chart_title {
+    font-family: Poppins;
+    font-weight: 500;
+    font-size: 2rem;
+    line-height: 100%;
+    letter-spacing: 0%;
+
+    color: var(--gray11);
+}
+
+.income_chart_dropdown_wrapper {
+    position: relative;
+}
+
+.income_chart_dropdown {
+    background: var(--gray12);
+    padding: 6px 8px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    font-family: Poppins;
+    font-weight: 400;
+    font-size: 1.4rem;
+    line-height: 20px;
+    letter-spacing: 0px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.income_chart_dropdown:hover {
+    background-color: var(--gray);
+}
+
+.income_chart_dropdown svg {
+    margin-left: 6px;
+}
+
+.income_chart_dropdown_menu {
+    position: absolute;
+    top: 35px;
+    right: 0;
+    background: var(--white);
+    border: 1px solid var(--gray12);
+    border-radius: 8px;
+    width: 100px;
+    z-index: 100;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.income_chart_dropdown_item {
+    padding: 8px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s ease;
+}
+
+.income_chart_dropdown_item:hover {
+    background-color: var(--gray);
+}

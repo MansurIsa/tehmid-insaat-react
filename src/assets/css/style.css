@@ -1,0 +1,65 @@
+@import "./variables.css";
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Mulish:ital,wght@0,200..1000;1,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 10px;
+}
+
+body {
+    font-size: 1.6rem;
+    overflow-x: hidden !important;
+    font-family: Poppins;
+}
+
+a {
+    text-decoration: none;
+}
+
+ul li {
+    list-style: none;
+}
+
+.project_container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.admin_container{
+    max-width: 1105px;
+    margin: 0 auto;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+}
+select{
+    outline: none;
+    border: none;
+}
+main{
+    background-color: var(--gray);
+}
+input,textarea{
+    outline: none;
+}
+
+@media screen and (max-width: 1250px){
+    .project_container{
+        padding: 0 20px;
+    }
+}
+
+@media screen and (max-width: 1500px) {
+    .admin_container {
+        margin: 0 20px;
+    }
+
+   
+}

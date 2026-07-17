@@ -1,0 +1,90 @@
+.sales_chart_container {
+    /* height: 430px; */
+    background-color: var(--white);
+    border-radius: 12px;
+    padding-bottom: 70px;
+}
+
+.chart_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.sales_chart_container h3 {
+    font-family: Poppins;
+    font-weight: 500;
+    font-size: 1.8rem;
+    line-height: 140%;
+    letter-spacing: 0%;
+    color: var(--gray11);
+    padding: 20px;
+
+}
+
+.chart_controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(300px,1fr));
+    width: 100%;
+    align-items: center;
+}
+
+.legend {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+}
+
+.dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.yellow {
+    background-color: var(--yellow);
+    font-family: Poppins;
+    font-weight: 500;
+    font-size: 1.4rem;
+    line-height: 20px;
+    letter-spacing: 0.5px;
+
+}
+
+.black {
+    background-color: var(--mainFirst);
+    font-family: Poppins;
+    font-weight: 500;
+    font-size: 1.4rem;
+    line-height: 20px;
+    letter-spacing: 0.5px;
+
+}
+
+.dropdown {
+    display: flex;
+    align-items: center;
+    padding: 6px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: var(--gray);
+    max-width: 100px;
+
+}
+
+.dropdown select {
+    outline: none;
+    border: none;
+    background: none;
+
+}
+
+.calendar_icon {
+    margin-right: 6px;
+}
+.chart_controls .form_group{
+    max-width: 300px !important;
+}
