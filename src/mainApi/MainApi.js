@@ -1,1 +1,1 @@
-export const baseUrl="https://api.tehmidinsaat.com/api/"
+export const baseUrl="https://admin.tehmidinsaat.com/api/"
