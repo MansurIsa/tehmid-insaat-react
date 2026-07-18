@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 // import gsap from 'gsap';
 import "./css/loader.css";
 import { useSelector } from 'react-redux';
-import Img from "../../assets/images/loaderimg.png"
+import Img from "../../assets/images/tehmid_logo.svg"
 
 const Loader = () => {
   const { isLoading } = useSelector((state) => state.loader);
