@@ -3,7 +3,7 @@ import AdminLayout from '../../layouts/adminLayout/AdminLayout';
 import './css/purchase.css';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getBrandList, getCategoryList, getProductsList } from '../../actions/productsAction/productsAction';
+import {  getCategoryList, getProductsList } from '../../actions/productsAction/productsAction';
 import { updatePurchase } from '../../actions/purchaseAction/purchaseAction';
 import { getSupplierList } from '../../actions/loginAction/loginAction';
 import CustomSupplierSelect from './CustomSupplierSelect';
@@ -12,7 +12,7 @@ import CustomProductSelect from './CustomProductSelect ';
 
 const UpdateNewPurchase = () => {
     const [formData, setFormData] = useState({
-        brand: '',
+        // brand: '',
         category: '',
         productId: '',
         supplierId: '',
@@ -25,14 +25,14 @@ const UpdateNewPurchase = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const { productsList, categoryList, brandList } = useSelector(state => state.products);
+    const { productsList, categoryList } = useSelector(state => state.products);
     const { supplierList } = useSelector(state => state.login);
     const { updatePurchaseObj } = useSelector(state => state.purchase);
 
     console.log(updatePurchaseObj);
     
     useEffect(() => {
-        dispatch(getBrandList());
+        // dispatch(getBrandList());
         dispatch(getCategoryList());
         dispatch(getProductsList());
         dispatch(getSupplierList());
@@ -41,7 +41,7 @@ const UpdateNewPurchase = () => {
     useEffect(() => {
         if (updatePurchaseObj) {
             setFormData({
-                brand: updatePurchaseObj.product?.brand?.id || '',
+                // brand: updatePurchaseObj.product?.brand?.id || '',
                 category: updatePurchaseObj.product?.category?.id || '',
                 productId: updatePurchaseObj.product?.id || '',
                 supplierId: updatePurchaseObj.supplier || '',
@@ -81,7 +81,7 @@ const UpdateNewPurchase = () => {
     };
 
     const filteredProducts = productsList.filter(p =>
-        (!formData.brand || p.brand?.id === +formData.brand) &&
+        
         (!formData.category || p.category?.id === +formData.category)
     );
 

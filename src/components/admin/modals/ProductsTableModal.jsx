@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ReactPaginate from 'react-paginate';
 import { handleCloseModal, setSelectedProduct } from '../../../redux/slices/admin/productTableSlice';
-import { getBrandList, getCategoryList, getProductsList } from '../../../actions/productsAction/productsAction';
+import {  getCategoryList, getProductsList } from '../../../actions/productsAction/productsAction';
 import './css/modals.css';
 
 const ProductsTableModal = () => {
   const dispatch = useDispatch();
-  const { categoryList, brandList, productsList, count } = useSelector(state => state.products);
+  const { categoryList, productsList, count } = useSelector(state => state.products);
 
   const [search, setSearch] = useState('');
-  const [selectedBrand, setSelectedBrand] = useState('');
+  // const [selectedBrand, setSelectedBrand] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [page, setPage] = useState(1);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -18,11 +18,11 @@ const ProductsTableModal = () => {
   const pageCount = Math.ceil(count / 10); // backend 10 item/page göndərirsə
 
   const fetchProducts = () => {
-    dispatch(getProductsList(page, search, selectedCategory, selectedBrand));
+    dispatch(getProductsList(page, search, selectedCategory));
   };
 
   useEffect(() => {
-    dispatch(getBrandList());
+    // dispatch(getBrandList());
     dispatch(getCategoryList());
     fetchProducts();
   }, []);
@@ -30,7 +30,7 @@ const ProductsTableModal = () => {
   useEffect(() => {
     setPage(1);
     fetchProducts();
-  }, [search, selectedBrand, selectedCategory]);
+  }, [search, selectedCategory]);
 
   useEffect(() => {
     fetchProducts();
@@ -63,10 +63,10 @@ const ProductsTableModal = () => {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
-              <select value={selectedBrand} onChange={(e) => setSelectedBrand(e.target.value)}>
+              {/* <select value={selectedBrand} onChange={(e) => setSelectedBrand(e.target.value)}>
                 <option value="">Bütün Markalar</option>
                 {brandList?.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
-              </select>
+              </select> */}
               <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
                 <option value="">Bütün Kateqoriyalar</option>
                 {categoryList?.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -93,7 +93,7 @@ const ProductsTableModal = () => {
                           onChange={() => handleRowSelect(index)}
                         />
                       </td>
-                      <td>{item?.name} ({item?.store?.name})</td>
+                      <td>{item?.name}</td>
                       <td>{item.articles?.map(a => a.name).join(', ')}</td>
                     </tr>
                   ))}

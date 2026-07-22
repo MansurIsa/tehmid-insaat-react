@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import AdminLayout from "../../layouts/adminLayout/AdminLayout";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getBrandList, getCategoryList } from "../../actions/productsAction/productsAction";
+import {  getCategoryList } from "../../actions/productsAction/productsAction";
 import { getStockList } from "../../actions/stockActions/stockActions";
 import { getUsersList } from "../../actions/loginAction/loginAction";
 import { addSale } from "../../actions/salesAction/salesAction";
@@ -16,7 +16,7 @@ const SalesProductsSelect = () => {
   const { stockList, count } = useSelector((state) => state.stock);
   const { usersList, customerFactureList } = useSelector((state) => state.login);
   const { plusSalesObj } = useSelector((state) => state.sales);
-  const { brandList } = useSelector((state) => state.products);
+  // const { brandList } = useSelector((state) => state.products);
 
   const [selectedProductIds, setSelectedProductIds] = useState([]);
   const [quantityValues, setQuantityValues] = useState({});
@@ -27,12 +27,12 @@ const SalesProductsSelect = () => {
   const [selectedDateTime, setSelectedDateTime] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [activeBrandId, setActiveBrandId] = useState(null);
+  // const [activeBrandId, setActiveBrandId] = useState(null);
   const searchTimeout = useRef(null);
   const itemsPerPage = 10;
 
   useEffect(() => {
-    dispatch(getBrandList());
+    // dispatch(getBrandList());
     dispatch(getCategoryList());
     dispatch(getUsersList());
     
@@ -42,13 +42,13 @@ const SalesProductsSelect = () => {
   }, [dispatch]);
 
   // Axtarış və marka filtrini birlikdə API-ə göndər
-  const fetchStock = (page = 1, search = "", brand = null) => {
+  const fetchStock = (page = 1, search = "") => {
     let searchQuery = search;
     
     // Əgər marka seçilibsə, onu da axtarış sətrinə əlavə et
-    if (brand && brand !== null) {
-      searchQuery = search ? `${search} ${brand}` : brand;
-    }
+    // if (brand && brand !== null) {
+    //   searchQuery = search ? `${search} ${brand}` : brand;
+    // }
     
     dispatch(getStockList(page, searchQuery));
     setCurrentPage(page);
@@ -56,8 +56,8 @@ const SalesProductsSelect = () => {
 
   // searchTerm və ya activeBrandId dəyişdikdə avtomatik fetch et
   useEffect(() => {
-    fetchStock(1, searchTerm, activeBrandId);
-  }, [searchTerm, activeBrandId]);
+    fetchStock(1, searchTerm);
+  }, [searchTerm]);
 
   const formatToDateTimeLocal = (date) => {
     const year = date.getFullYear();
@@ -89,11 +89,11 @@ const SalesProductsSelect = () => {
     }, 300);
   };
 
-  const handleBrandFilter = (brandName) => {
-    setActiveBrandId(brandName);
-    setCurrentPage(1);
-    // activeBrandId dəyişdiyi üçün useEffect avtomatik fetch edəcək
-  };
+  // const handleBrandFilter = (brandName) => {
+  //   setActiveBrandId(brandName);
+  //   setCurrentPage(1);
+  //   // activeBrandId dəyişdiyi üçün useEffect avtomatik fetch edəcək
+  // };
 
   const calculateTotalStock = (productId) => {
     return initialStockValues[productId] || 0;
@@ -233,7 +233,7 @@ const SalesProductsSelect = () => {
 
   const handlePageClick = (event) => {
     const selectedPage = event.selected + 1;
-    fetchStock(selectedPage, searchTerm, activeBrandId);
+    fetchStock(selectedPage, searchTerm);
   };
 
   const returnSales = () => navigate("/sales");
@@ -316,7 +316,7 @@ const SalesProductsSelect = () => {
         </div>
 
         {/* MARKA FİLTERİ BÖLMƏSİ */}
-        <div className="admin_container brand_list_buttons">
+        {/* <div className="admin_container brand_list_buttons">
           <button
             onClick={() => handleBrandFilter(null)}
             className={activeBrandId === null ? 'active' : ''}
@@ -333,7 +333,7 @@ const SalesProductsSelect = () => {
               {data.name}
             </button>
           ))}
-        </div>
+        </div> */}
 
         {/* AXTARIŞ INPUTU */}
         <div className="admin_header_search project_container">
@@ -352,8 +352,8 @@ const SalesProductsSelect = () => {
                 <th className="number_table"></th>
                 <th>Məhsul Adı</th>
                 <th>Artikl</th>
-                <th>Marka</th>
-                <th>Brend</th>
+                {/* <th>Marka</th>
+                <th>Brend</th> */}
                 <th>Qalan Say</th>
                 <th>Maya Dəyəri</th>
                 <th>Satış Qiyməti</th>
@@ -381,12 +381,12 @@ const SalesProductsSelect = () => {
                         onChange={() => toggleRow(productId, product, item.amount)}
                       />
                     </td>
-                    <td>{product?.name} {product?.degree}</td>
+                    <td>{product?.name} </td>
                     <td>
                       {product?.articles?.map((a) => a.name).join(", ") || "-"}
                     </td>
-                    <td>{product?.brand?.name || "-"}</td>
-                    <td>{product?.store?.name || "-"}</td>
+                    {/* <td>{product?.brand?.name || "-"}</td>
+                    <td>{product?.store?.name || "-"}</td> */}
                     <td>
                       {item.amount}
                       {isSelected && (
@@ -441,11 +441,11 @@ const SalesProductsSelect = () => {
           {/* MƏHSUL TAPILMADI MESAJI */}
           {stockList?.length === 0 && (
             <div className="no-products-message">
-              {activeBrandId && searchTerm 
-                ? `"${searchTerm}" və "${activeBrandId}" markasına uyğun məhsul tapılmadı`
-                : activeBrandId 
-                ? `"${activeBrandId}" markasına uyğun məhsul tapılmadı`
+              { searchTerm 
+                ? `"${searchTerm}"  uyğun məhsul tapılmadı`
                 : searchTerm 
+                // ? `"${activeBrandId}" markasına uyğun məhsul tapılmadı`
+                // : searchTerm 
                 ? `"${searchTerm}" axtarışına uyğun məhsul tapılmadı`
                 : "Heç bir məhsul tapılmadı"}
             </div>

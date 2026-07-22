@@ -1,6 +1,6 @@
 import axios from "axios";
 import { baseUrl } from "../../mainApi/MainApi";
-import { getBrandListFunc, getCategoryListFunc, getProductObjFunc, getProductsListFunc, getProductsListFuncTest, getRecentProductsListFunc, getStoreListFunc } from "../../redux/slices/productsSlices";
+import {  getCategoryListFunc, getProductObjFunc, getProductsListFunc, getProductsListFuncTest, getRecentProductsListFunc } from "../../redux/slices/productsSlices";
 import { startLoading, stopLoading } from "../../redux/slices/loaderSlice";
 import toast from "react-hot-toast";
 import { closeProductsDeleteModalFunc } from "../../redux/slices/admin/productTableSlice";
@@ -24,16 +24,16 @@ export const getProductsList = (
   page = 1,
   search = "",
   category = "",
-  brand = "",
-  store = ""
+  // brand = "",
+  // store = ""
 ) => async (dispatch) => {
   // dispatch(startLoading());
 
   // search string yığılır
   let searchQuery = search;
   if (category) searchQuery += ` ${category}`;
-  if (brand) searchQuery += ` ${brand}`;
-  if (store) searchQuery += ` ${store}`;
+  // if (brand) searchQuery += ` ${brand}`;
+  // if (store) searchQuery += ` ${store}`;
 
   return await axios
     .get(`${baseUrl}core/product-list/?page=${page}&search=${encodeURIComponent(searchQuery.trim())}`)
@@ -53,16 +53,16 @@ export const getProductsListTest = (
   page = 1,
   search = "",
   category = "",
-  brand = "",
-  store = ""
+  // brand = "",
+  // store = ""
 ) => async (dispatch) => {
   // dispatch(startLoading());
 
   // search string yığılır
   let searchQuery = search;
   if (category) searchQuery += ` ${category}`;
-  if (brand) searchQuery += ` ${brand}`;
-  if (store) searchQuery += ` ${store}`;
+  // if (brand) searchQuery += ` ${brand}`;
+  // if (store) searchQuery += ` ${store}`;
 
   return await axios
     .get(`${baseUrl}core/short-product-list/?page=${page}&search=${encodeURIComponent(searchQuery.trim())}`)
@@ -82,15 +82,15 @@ export const getProductsListTest = (
 export const getRecentProductsList = (
   page = 1,
   search = "",
-  brand = "",
-  store = ""
+  // brand = "",
+  // store = ""
 ) => async (dispatch) => {
   // dispatch(startLoading());
 
   // search string yığılır
   let searchQuery = search;
-  if (brand) searchQuery += ` ${brand}`;
-  if (store) searchQuery += ` ${store}`;
+  // if (brand) searchQuery += ` ${brand}`;
+  // if (store) searchQuery += ` ${store}`;
 
   return await axios
     .get(`${baseUrl}core/recent-product-list/?page=${page}&search=${encodeURIComponent(searchQuery.trim())}`)
@@ -120,33 +120,33 @@ export const getCategoryList = () => async (dispatch) => {
     });;
 };
 
-export const getBrandList = () => async (dispatch) => {
-  dispatch(startLoading());
-  return await axios.get(`${baseUrl}core/brand-list/`)
-    .then((resp) => {
-        console.log(resp.data);
-      dispatch(getBrandListFunc(resp.data));
-    })
-    .catch((err) => {
-      console.log(err);
-    }).finally(() => {
-      dispatch(stopLoading());
-    });;
-};
+// export const getBrandList = () => async (dispatch) => {
+//   dispatch(startLoading());
+//   return await axios.get(`${baseUrl}core/brand-list/`)
+//     .then((resp) => {
+//         console.log(resp.data);
+//       dispatch(getBrandListFunc(resp.data));
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//     }).finally(() => {
+//       dispatch(stopLoading());
+//     });;
+// };
 
-export const getStoreList = () => async (dispatch) => {
-  dispatch(startLoading());
-  return await axios.get(`${baseUrl}core/store-list/`)
-    .then((resp) => {
-        console.log(resp.data);
-      dispatch(getStoreListFunc(resp.data));
-    })
-    .catch((err) => {
-      console.log(err);
-    }).finally(() => {
-      dispatch(stopLoading());
-    });;
-};
+// export const getStoreList = () => async (dispatch) => {
+//   dispatch(startLoading());
+//   return await axios.get(`${baseUrl}core/store-list/`)
+//     .then((resp) => {
+//         console.log(resp.data);
+//       dispatch(getStoreListFunc(resp.data));
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//     }).finally(() => {
+//       dispatch(stopLoading());
+//     });;
+// };
 
 
 export const addProductToCart = (data,navigate) => async (dispatch) => {

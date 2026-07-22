@@ -39,6 +39,8 @@ const PurchaseTableEnd = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { purchaseListList, count } = useSelector(state => state.purchase);
+    console.log(purchaseListList);
+    
 
 
     // ================== LOCALSTORAGE WRITE ==================

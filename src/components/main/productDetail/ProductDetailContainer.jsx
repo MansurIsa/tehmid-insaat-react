@@ -10,53 +10,106 @@ const ProductDetailContainer = ({ productObj, userObj }) => {
     const navigate = useNavigate()
 
     const [openIndex, setOpenIndex] = useState(null)
-    const [quantity, setQuantity] = useState(0)
+    const [quantity, setQuantity] = useState("0") // string olaraq dəyişdirildi
+    const [error, setError] = useState("") // error state əlavə edildi
+
+    // isPiece dəyişəni əlavə edildi
+    const isPiece = productObj?.unit === "piece";
 
     const toggleContent = (index) => {
         setOpenIndex(openIndex === index ? null : index)
     }
 
-    const handleIncrement = () => setQuantity(prev => prev + 1)
-    const handleDecrement = () => setQuantity(prev => prev > 0 ? prev - 1 : 0)
-    const handleInputChange = (e) => {
-        let value = e.target.value;
+    const handleIncrement = () => {
+        const current = Number(quantity) || 0;
+        setError("");
 
-        // Rəqəmdən başqa bir şey daxil olunarsa, icazə vermə
-        if (!/^\d*$/.test(value)) return;
+        if (isPiece) {
+            setQuantity(String(current + 1));
+        } else {
+            setQuantity(String((current + 0.1).toFixed(2).replace(/\.00$/, "")));
+        }
+    }
 
-        // Əgər boşdursa (backspace ilə silinibsə), sıfır et
-        if (value === "") {
-            setQuantity(0);
+    const handleDecrement = () => {
+        const current = Number(quantity) || 0;
+        setError("");
+
+        if (current <= 0) {
+            setQuantity("0");
             return;
         }
 
-        // Əgər başda 0 varsa (məs: 01, 007) → avtomatik təmizlə
-        value = value.replace(/^0+/, '') || '0';
+        if (isPiece) {
+            setQuantity(String(Math.max(current - 1, 0)));
+        } else {
+            const value = Math.max(current - 0.1, 0);
+            setQuantity(String(value.toFixed(2).replace(/\.00$/, "")));
+        }
+    }
 
-        setQuantity(parseInt(value, 10));
+    const handleInputChange = (e) => {
+        let value = e.target.value.replace(",", ".");
+        setError("");
+
+        if (value === "") {
+            setQuantity("");
+            return;
+        }
+
+        if (isPiece) {
+            if (!/^\d*$/.test(value)) {
+                setError("Ədəd ilə satılan məhsullar üçün yalnız tam ədəd daxil edə bilərsiniz.");
+                return;
+            }
+
+            value = value.replace(/^0+(?=\d)/, "");
+            setQuantity(value);
+        } else {
+            if (!/^\d*\.?\d*$/.test(value)) return;
+
+            value = value.replace(/^0+(?=\d)/, "");
+            setQuantity(value);
+        }
     };
 
     const handleInputBlur = () => {
-        if (quantity === "" || quantity < 1) setQuantity(1)
+        if (quantity === "" || quantity === "0") {
+            setQuantity("1");
+        }
+        // Əgər dəyər rəqəm deyilsə və ya mənfi rəqəmdirsə
+        const num = Number(quantity);
+        if (isNaN(num) || num < 0) {
+            setQuantity("0");
+        }
     }
 
     const addToCart = () => {
-        if (accessToken) {
-            dispatch(addProductToCart({
-                quantity: quantity,
-                user: userObj?.id,
-                product: productObj?.id
-            }, navigate))
-        } else {
-            navigate("/login")
+        if (!accessToken) {
+            navigate("/login");
+            return;
         }
+
+        const qty = Number(quantity);
+
+        if (!qty || qty <= 0) {
+            setError("Miqdar 0-dan böyük olmalıdır!");
+            return;
+        }
+
+        setError("");
+        dispatch(addProductToCart({
+            quantity: qty,
+            user: userObj?.id,
+            product: productObj?.id
+        }, navigate))
     }
 
     return (
         <div className='product_detail_page project_container'>
             <div className="product_detail_page_paths">
                 <Link to={'/products'}>Məhsullar</Link>
-                / <p>{productObj?.name} {productObj?.degree}</p>
+                / <p>{productObj?.name} </p>
             </div>
 
             <div className="product_detail_container">
@@ -66,7 +119,7 @@ const ProductDetailContainer = ({ productObj, userObj }) => {
 
                 <div className="product_detail_container_right">
                     <div className="product_detail_container_right_color">
-                        <h1>{productObj?.name} {productObj?.degree}</h1>
+                        <h1>{productObj?.name} </h1>
                         {
                             accessToken && (
                                 <span
@@ -93,15 +146,8 @@ const ProductDetailContainer = ({ productObj, userObj }) => {
                             <h2>Kateqoriya</h2>
                             <p>{productObj?.category?.name}</p>
                         </div>
-                        <div>
-                            <h2>Marka</h2>
-                            <p>{productObj?.brand?.name}</p>
-                        </div>
-                        <div>
-                            <h2>Brend</h2>
-                            <p>{productObj?.store?.name}</p>
-                        </div>
                     </div>
+                    
                     <div className="article_pr_name">
                         Məhsul kodu:
                         <div className="article_grid">
@@ -123,6 +169,7 @@ const ProductDetailContainer = ({ productObj, userObj }) => {
                             </div>
                         ))}
                     </div>
+                    
                     <div className='price_inc_dec_pr'>
                         {accessToken && (
                             <p className="product_detail_container_right_price">
@@ -155,16 +202,39 @@ const ProductDetailContainer = ({ productObj, userObj }) => {
                                     </span>
                                 ) : null}
                             </p>
-
                         )}
+                        
+                        {/* Ölçü vahidi göstəricisi əlavə edildi */}
+                        <p className="filter_product_card_content">
+                            Ölçü vahidi:
+                            <span
+                                style={{
+                                    fontWeight: "bold",
+                                    color: "var(--red)",
+                                }}
+                            >
+                                {" "}
+                                {productObj?.unit === "piece"
+                                    ? "ədəd"
+                                    : productObj?.unit === "kg"
+                                    ? "kiloqram"
+                                    : productObj?.unit === "metre"
+                                    ? "metr"
+                                    : ""}
+                            </span>
+                        </p>
+
                         <div className="inc_dec_pr">
                             <button type="button" onClick={handleDecrement}>-</button>
                             <input
                                 type="text"
-                                inputMode="numeric"
+                                inputMode="decimal"
                                 value={quantity}
                                 onChange={handleInputChange}
                                 onBlur={handleInputBlur}
+                                style={{
+                                    borderColor: error ? "red" : undefined,
+                                }}
                             />
                             <button type="button" onClick={handleIncrement}>+</button>
                             <button
@@ -172,19 +242,32 @@ const ProductDetailContainer = ({ productObj, userObj }) => {
                                 onClick={addToCart}
                                 className='add_to_cart_pr'
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <circle cx="9" cy="21" r="1" />
                                     <circle cx="20" cy="21" r="1" />
                                     <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
                                 </svg>
-
                             </button>
                         </div>
+                        
+                        {/* Xəta mesajı */}
+                        {error && (
+                            <div
+                                style={{
+                                    color: "red",
+                                    fontSize: "12px",
+                                    marginTop: "6px",
+                                    textAlign: "center",
+                                    backgroundColor: "#fff0f0",
+                                    padding: "6px 10px",
+                                    borderRadius: "4px",
+                                    border: "1px solid #ffcccc",
+                                }}
+                            >
+                                ⚠️ {error}
+                            </div>
+                        )}
                     </div>
-
-
-                    {/* ➕➖ Say və səbətə əlavə hissəsi */}
-
                 </div>
             </div>
         </div>

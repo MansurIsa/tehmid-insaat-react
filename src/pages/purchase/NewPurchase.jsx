@@ -3,7 +3,7 @@ import AdminLayout from '../../layouts/adminLayout/AdminLayout';
 import './css/purchase.css';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getBrandList, getCategoryList, getProductsList } from '../../actions/productsAction/productsAction';
+import {  getCategoryList, getProductsList } from '../../actions/productsAction/productsAction';
 import { addPurchase } from '../../actions/purchaseAction/purchaseAction';
 import { getSupplierList } from '../../actions/loginAction/loginAction';
 import CustomSupplierSelect from './CustomSupplierSelect';
@@ -33,7 +33,7 @@ const NewPurchase = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(getBrandList());
+        // dispatch(getBrandList());
         dispatch(getCategoryList());
         dispatch(getSupplierList());
     }, [dispatch]);

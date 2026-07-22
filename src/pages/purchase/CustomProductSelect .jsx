@@ -116,7 +116,7 @@ const CustomProductSelect = ({ value, onChange, preselectedProduct }) => {
                 className={`custom-select-option ${selectedProduct?.id === product.id ? 'selected' : ''}`}
                 onClick={() => handleSelect(product)}
               >
-                {product.name} {product?.degree} ({product?.store?.name})
+                {product.name} 
               </div>
             ))
           ) : (

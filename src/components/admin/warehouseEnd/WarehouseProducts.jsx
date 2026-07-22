@@ -18,8 +18,8 @@ const WarehouseProducts = ({ stockList, currentPage, onPageChange, totalCount })
             <tr>
               <th>Məhsul Adı</th>
               <th>Kateqoriya</th>
-              <th>Marka</th>
-              <th>Brend</th>
+              {/* <th>Marka</th>
+              <th>Brend</th> */}
               <th>Artikl</th>
               <th>Miqdar</th>
               <th>Maya dəyəri</th>
@@ -28,9 +28,9 @@ const WarehouseProducts = ({ stockList, currentPage, onPageChange, totalCount })
           <tbody>
             {stockList?.map((item, index) => {
               const product = item.product;
-              const brand = product?.brand?.name || "—";
+              // const brand = product?.brand?.name || "—";
               const category = product?.category?.name || "—";
-              const store = product?.store?.name || "—";
+              // const store = product?.store?.name || "—";
               const name = product?.name || "—";
               const costPrice = product?.cost_price || "—";
               const articles = product?.articles?.map(a => a.name).join(", ") || "—";
@@ -39,8 +39,8 @@ const WarehouseProducts = ({ stockList, currentPage, onPageChange, totalCount })
                 <tr key={index}>
                   <td>{name}</td>
                   <td>{category}</td>
-                  <td>{brand}</td>
-                  <td>{store}</td>
+                  {/* <td>{brand}</td> */}
+                  {/* <td>{store}</td> */}
                   <td className='table_article_scroll'>{articles}</td>
                   <td>{item.amount}</td>
                   <td>{costPrice} ₼</td>

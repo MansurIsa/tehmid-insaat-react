@@ -3,7 +3,7 @@ import AdminLayout from '../../layouts/adminLayout/AdminLayout';
 import { useNavigate } from 'react-router-dom';
 import "./css/products.css"
 import { useDispatch, useSelector } from 'react-redux';
-import { getBrandList, getCategoryList, getStoreList } from '../../actions/productsAction/productsAction';
+import { getCategoryList } from '../../actions/productsAction/productsAction';
 import { addProduct } from '../../actions/productsTableAction/productsTableAction';
 import CustomSelect from './CustomSelect';
 import EditableAboutField from './EditableAboutField';
@@ -14,12 +14,11 @@ const NewProducts = () => {
     name: '',
     articles: [],
     category: '',
-    brand: '',
     image: null,
-    store: '',
+    unit: 'piece',
     titles: [''],
     contents: [''],
-    degree: ''
+    
   });
 
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -27,11 +26,11 @@ const NewProducts = () => {
 
   useEffect(() => {
     dispatch(getCategoryList());
-    dispatch(getBrandList());
-    dispatch(getStoreList());
+    // dispatch(getBrandList());
+    // dispatch(getStoreList());
   }, [dispatch]);
 
-  const { categoryList, brandList, storeList } = useSelector(state => state.products);
+  const { categoryList } = useSelector(state => state.products);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -106,11 +105,12 @@ const NewProducts = () => {
     form.append('name', formData.name);
     form.append('articles', JSON.stringify(formData.articles));
     form.append('category', +formData.category);
-    form.append('brand', +formData.brand);
-    form.append('store', +formData.store);
+    form.append('unit', formData.unit);
+    // form.append('brand', +formData.brand);
+    // form.append('store', +formData.store);
     form.append('titles', JSON.stringify(formData.titles));
     form.append('contents', JSON.stringify(sanitizedContents));
-    form.append('degree', JSON.stringify(formData.degree));
+    // form.append('degree', JSON.stringify(formData.degree));
 
     if (formData.image) {
       form.append('image', formData.image);
@@ -182,7 +182,7 @@ const NewProducts = () => {
               placeholder="Kateqoriya seçin"
             />
 
-            <CustomSelect
+            {/* <CustomSelect
               label="Marka"
               options={brandList}
               value={formData.brand}
@@ -196,9 +196,9 @@ const NewProducts = () => {
               value={formData.store}
               onChange={(id) => setFormData(prev => ({ ...prev, store: id }))}
               placeholder="Brend seçin"
-            />
+            /> */}
           </div>
-          <div className="form_group">
+          {/* <div className="form_group">
             <label>Dərəcə</label>
             <input
               type="text"
@@ -207,6 +207,18 @@ const NewProducts = () => {
               value={formData.degree}
               onChange={handleChange}
             />
+          </div> */}
+          <div className="form_group">
+            <label>Ölçü vahidi</label>
+            <select
+              name="unit"
+              value={formData.unit}
+              onChange={handleChange}
+            >
+              <option value="piece">Ədəd</option>
+              <option value="kg">Kiloqram</option>
+              <option value="metre">Metr</option>
+            </select>
           </div>
           <div className="form_group">
             <label>Başlıq və məzmunlar</label>

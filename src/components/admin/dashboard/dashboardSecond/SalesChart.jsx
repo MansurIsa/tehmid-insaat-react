@@ -12,18 +12,18 @@ import './css/salesChart.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { getChartsDashboardList } from '../../../../actions/dashboardAction/dashboardAction';
 import { getUserObj, getUsersList } from '../../../../actions/loginAction/loginAction';
-import { getBrandList } from '../../../../actions/productsAction/productsAction';
+// import { getBrandList } from '../../../../actions/productsAction/productsAction';
 import CustomCustomerSelect from '../../../../components/admin/salesTableHead/CustomCustomerSelect';
 
 const SalesChart = () => {
   const dispatch = useDispatch();
   const [filterType, setFilterType] = useState('A'); // "A" - aylıq, "I" - illik
   const [selectedCustomer, setSelectedCustomer] = useState('');
-  const [selectedBrand, setSelectedBrand] = useState('0'); // default: 0 = bütün markalar
+  // const [selectedBrand, setSelectedBrand] = useState('0'); // default: 0 = bütün markalar
 
   const { usersList, userObj } = useSelector(state => state.login);
   const { chartObj } = useSelector(state => state.dashboard);
-  const { brandList } = useSelector(state => state.products);
+  // const { brandList } = useSelector(state => state.products);
 
   console.log(usersList);
   
@@ -32,7 +32,7 @@ const SalesChart = () => {
   useEffect(() => {
     dispatch(getUsersList(1,""));
     dispatch(getUserObj());
-    dispatch(getBrandList());
+    // dispatch(getBrandList());
   }, [dispatch]);
 
   // Superuser üçün default selected
@@ -44,15 +44,15 @@ const SalesChart = () => {
 
   // Chart üçün API çağırış
   useEffect(() => {
-    if (!userObj || selectedBrand === '') return;
+    // if (!userObj || selectedBrand === '') return;
 
     const idToSend =
       userObj.is_superuser && selectedCustomer
         ? selectedCustomer
         : userObj.id;
 
-    dispatch(getChartsDashboardList(idToSend, filterType, selectedBrand));
-  }, [dispatch, filterType, selectedCustomer, userObj, selectedBrand]);
+    dispatch(getChartsDashboardList(idToSend, filterType));
+  }, [dispatch, filterType, selectedCustomer, userObj]);
 
   // Backend search handler
   const handleSearch = (searchTerm) => {
@@ -91,7 +91,7 @@ const SalesChart = () => {
           )}
 
           {/* Brand select */}
-          <div className="form_group">
+          {/* <div className="form_group">
             <select
               value={selectedBrand}
               onChange={(e) => setSelectedBrand(e.target.value)}
@@ -103,7 +103,7 @@ const SalesChart = () => {
                 </option>
               ))}
             </select>
-          </div>
+          </div> */}
 
           {/* Filter type: aylıq/illik */}
           <div className="dropdown">

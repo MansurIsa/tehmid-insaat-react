@@ -17,59 +17,130 @@ const colors = [
 ];
 
 // Qruplaşdırma funksiyası
+// const groupPaymentsByRange = (paymentList, range) => {
+//   const grouped = {};
+
+//   paymentList.forEach(({ datetime, amount }) => {
+//     const date = new Date(datetime);
+//     let key;
+
+//     switch (range) {
+//       case 'Günlük':
+//         // YYYY-MM-DD
+//         key = date.toISOString().slice(0, 10);
+//         break;
+//       case 'Aylıq':
+//         // YYYY-MM
+//         key = `${date.getFullYear()}-${(date.getMonth() + 1)
+//           .toString()
+//           .padStart(2, '0')}`;
+//         break;
+//       case 'İllik':
+//         // YYYY
+//         key = `${date.getFullYear()}`;
+//         break;
+//       default:
+//         key = `${date.getFullYear()}-${(date.getMonth() + 1)
+//           .toString()
+//           .padStart(2, '0')}`;
+//     }
+
+//     if (!grouped[key]) grouped[key] = 0;
+//     grouped[key] += amount;
+//   });
+
+//   // Ay adları Azərbaycan dilində
+//   const monthNames = [
+//     'Yan', 'Fev', 'Mar', 'Apr', 'May', 'İyn',
+//     'İyl', 'Avq', 'Sen', 'Okt', 'Noy', 'Dek'
+//   ];
+
+//   return Object.entries(grouped).map(([key, gəlir]) => {
+//     let name;
+
+//     if (range === 'Günlük') {
+//       // key = YYYY-MM-DD, ad kimi gün (DD)
+//       name = key.slice(8, 10);
+//     } else if (range === 'Aylıq') {
+//       // key = YYYY-MM
+//       const [, month] = key.split('-');
+//       name = monthNames[parseInt(month, 10) - 1];
+//     } else if (range === 'İllik') {
+//       name = key;
+//     }
+
+//     return { name, gəlir: parseFloat(gəlir.toFixed(2)) };
+//   });
+// };
+
 const groupPaymentsByRange = (paymentList, range) => {
   const grouped = {};
 
   paymentList.forEach(({ datetime, amount }) => {
     const date = new Date(datetime);
+    const value = Number(amount); // Decimal string -> Number
+
     let key;
 
     switch (range) {
-      case 'Günlük':
-        // YYYY-MM-DD
+      case "Günlük":
         key = date.toISOString().slice(0, 10);
         break;
-      case 'Aylıq':
-        // YYYY-MM
+
+      case "Aylıq":
         key = `${date.getFullYear()}-${(date.getMonth() + 1)
           .toString()
-          .padStart(2, '0')}`;
+          .padStart(2, "0")}`;
         break;
-      case 'İllik':
-        // YYYY
+
+      case "İllik":
         key = `${date.getFullYear()}`;
         break;
+
       default:
         key = `${date.getFullYear()}-${(date.getMonth() + 1)
           .toString()
-          .padStart(2, '0')}`;
+          .padStart(2, "0")}`;
     }
 
-    if (!grouped[key]) grouped[key] = 0;
-    grouped[key] += amount;
+    if (!grouped[key]) {
+      grouped[key] = 0;
+    }
+
+    grouped[key] += value;
   });
 
-  // Ay adları Azərbaycan dilində
   const monthNames = [
-    'Yan', 'Fev', 'Mar', 'Apr', 'May', 'İyn',
-    'İyl', 'Avq', 'Sen', 'Okt', 'Noy', 'Dek'
+    "Yan",
+    "Fev",
+    "Mar",
+    "Apr",
+    "May",
+    "İyn",
+    "İyl",
+    "Avq",
+    "Sen",
+    "Okt",
+    "Noy",
+    "Dek",
   ];
 
   return Object.entries(grouped).map(([key, gəlir]) => {
     let name;
 
-    if (range === 'Günlük') {
-      // key = YYYY-MM-DD, ad kimi gün (DD)
+    if (range === "Günlük") {
       name = key.slice(8, 10);
-    } else if (range === 'Aylıq') {
-      // key = YYYY-MM
-      const [, month] = key.split('-');
+    } else if (range === "Aylıq") {
+      const [, month] = key.split("-");
       name = monthNames[parseInt(month, 10) - 1];
-    } else if (range === 'İllik') {
+    } else if (range === "İllik") {
       name = key;
     }
 
-    return { name, gəlir: parseFloat(gəlir.toFixed(2)) };
+    return {
+      name,
+      gəlir: Number(gəlir.toFixed(2)),
+    };
   });
 };
 

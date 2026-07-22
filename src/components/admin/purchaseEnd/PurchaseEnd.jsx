@@ -69,7 +69,7 @@ const PurchaseEnd = ({ purchaseList, supplierPurchaseObj }) => {
                             <th className="print_column print_column_number" style={{ width: "50px" }}>№</th>
                             <th className="print_column">Məhsul Adı</th>
                             <th className="print_column">Artikl</th>
-                            <th className="print_column">Brend</th>
+                            {/* <th className="print_column">Brend</th> */}
                             <th className="print_column">Miqdar</th>
                             <th className="print_column">Alış Qiyməti</th>
                             <th className="no-print">Maya Dəyəri</th>
@@ -90,7 +90,7 @@ const PurchaseEnd = ({ purchaseList, supplierPurchaseObj }) => {
                             return (
                                 <tr key={index}>
                                     <td className="print_column print_column_number" style={{ width: "50px" }}>{index + 1}</td>
-                                    <td className="print_column">{product?.name} {product?.degree}</td>
+                                    <td className="print_column">{product?.name} </td>
                                     {/* <td className="print_column">{articleNames}</td> */}
                                     <td className='table_article_scroll'>
                                         <span className="screen-only">
@@ -100,7 +100,7 @@ const PurchaseEnd = ({ purchaseList, supplierPurchaseObj }) => {
                                             {product?.articles?.[0]?.name || '—'}
                                         </span>
                                     </td>
-                                    <td className="print_column">{product?.store?.name || "-"}</td>
+                                    {/* <td className="print_column">{product?.store?.name || "-"}</td> */}
                                     <td className="print_column">{item.amount}</td>
                                     {/* <td className="print_column">{product.purchase_price} {currencySymbol}</td> */}
                                     <td className="print_column">{item?.price} {currencySymbol}</td>

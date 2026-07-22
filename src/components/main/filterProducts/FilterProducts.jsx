@@ -3,10 +3,10 @@ import "./css/filterProducts.css";
 import FilterProductsContainer from "./FilterProductsContainer";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getBrandList,
+  // getBrandList,
   getCategoryList,
   getProductsListTest,
-  getStoreList,
+  // getStoreList,
   getRecentProductsList,
   searchAnotherProducts,
 } from "../../../actions/productsAction/productsAction";
@@ -51,33 +51,33 @@ const FilterProducts = () => {
   const pageFromUrl = parseInt(searchParams.get("page")) || 1;
   const searchFromUrl = searchParams.get("search") || "";
   const categoryFromUrl = searchParams.get("category") || "Hamısı";
-  const brandFromUrl = searchParams.get("brand") || "Hamısı";
-  const storeFromUrl = searchParams.get("store") || "Hamısı";
+  // const brandFromUrl = searchParams.get("brand") || "Hamısı";
+  // const storeFromUrl = searchParams.get("store") || "Hamısı";
 
   const [currentPage, setCurrentPage] = useState(pageFromUrl - 1); // 0-based
   const [loading, setLoading] = useState(false);
 
   const pageSize = 10;
 
-  const [brandDropdownOpen, setBrandDropdownOpen] = useState(false);
-  const [storeDropdownOpen, setStoreDropdownOpen] = useState(false);
+  // const [brandDropdownOpen, setBrandDropdownOpen] = useState(false);
+  // const [storeDropdownOpen, setStoreDropdownOpen] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState(searchFromUrl);
   const debouncedSearch = useDebounce(searchQuery, 500);
 
   const [activeCategory, setActiveCategory] = useState(categoryFromUrl);
-  const [activeBrand, setActiveBrand] = useState(brandFromUrl);
-  const [activeStore, setActiveStore] = useState(storeFromUrl);
+  // const [activeBrand, setActiveBrand] = useState(brandFromUrl);
+  // const [activeStore, setActiveStore] = useState(storeFromUrl);
 
   // Refs for dropdown close handling
-  const brandDropdownRef = useRef(null);
-  const storeDropdownRef = useRef(null);
+  // const brandDropdownRef = useRef(null);
+  // const storeDropdownRef = useRef(null);
 
   const {
     recentProductsList,
     categoryList,
-    brandList,
-    storeList,
+    // brandList,
+    // storeList,
     count1,
     productsListTest,
     count2,
@@ -86,19 +86,19 @@ const FilterProducts = () => {
 
 
   // Close dropdowns when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (brandDropdownRef.current && !brandDropdownRef.current.contains(event.target)) {
-        setBrandDropdownOpen(false);
-      }
-      if (storeDropdownRef.current && !storeDropdownRef.current.contains(event.target)) {
-        setStoreDropdownOpen(false);
-      }
-    };
+  // useEffect(() => {
+  //   const handleClickOutside = (event) => {
+  //     if (brandDropdownRef.current && !brandDropdownRef.current.contains(event.target)) {
+  //       setBrandDropdownOpen(false);
+  //     }
+  //     if (storeDropdownRef.current && !storeDropdownRef.current.contains(event.target)) {
+  //       setStoreDropdownOpen(false);
+  //     }
+  //   };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => document.removeEventListener("mousedown", handleClickOutside);
+  // }, []);
 
   // YENİ: Bütün filterləri URL-də saxlamaq
   const updateURL = useCallback((updates) => {
@@ -120,8 +120,8 @@ const FilterProducts = () => {
     const urlPage = parseInt(searchParams.get("page")) || 1;
     const urlSearch = searchParams.get("search") || "";
     const urlCategory = searchParams.get("category") || "Hamısı";
-    const urlBrand = searchParams.get("brand") || "Hamısı";
-    const urlStore = searchParams.get("store") || "Hamısı";
+    // const urlBrand = searchParams.get("brand") || "Hamısı";
+    // const urlStore = searchParams.get("store") || "Hamısı";
 
     let hasChanges = false;
     const updates = {};
@@ -141,15 +141,15 @@ const FilterProducts = () => {
       hasChanges = true;
     }
 
-    if (urlBrand !== activeBrand) {
-      setActiveBrand(urlBrand);
-      hasChanges = true;
-    }
+    // if (urlBrand !== activeBrand) {
+    //   setActiveBrand(urlBrand);
+    //   hasChanges = true;
+    // }
 
-    if (urlStore !== activeStore) {
-      setActiveStore(urlStore);
-      hasChanges = true;
-    }
+    // if (urlStore !== activeStore) {
+    //   setActiveStore(urlStore);
+    //   hasChanges = true;
+    // }
 
     if (hasChanges) {
       console.log("URL-dən state-lər yeniləndi");
@@ -165,26 +165,24 @@ const FilterProducts = () => {
 
   // YENİ: Filterlər dəyişdikdə URL-i yenilə və səhifəni sıfırla
   useEffect(() => {
-    if (activeCategory !== categoryFromUrl || 
-        activeBrand !== brandFromUrl || 
-        activeStore !== storeFromUrl) {
+    if (activeCategory !== categoryFromUrl) {
       
       setCurrentPage(0);
       updateURL({ 
         category: activeCategory, 
-        brand: activeBrand, 
-        store: activeStore,
+        // brand: activeBrand, 
+        // store: activeStore,
         page: 1 
       });
     }
-  }, [activeCategory, activeBrand, activeStore, updateURL]);
+  }, [activeCategory, updateURL]);
 
   // Load initial data
   useEffect(() => {
     dispatch(getUserObj());
     dispatch(getCategoryList());
-    dispatch(getBrandList());
-    dispatch(getStoreList());
+    // dispatch(getBrandList());
+    // dispatch(getStoreList());
   }, [dispatch]);
 
 
@@ -198,27 +196,37 @@ const FilterProducts = () => {
       
       try {
         const apiPage = currentPage + 1; // API üçün 1-based
-        
-        if (activeCategory === "Yeni gələnlər") {
-          await dispatch(
-            getRecentProductsList(
-              apiPage,
-              debouncedSearch,
-              activeBrand !== "Hamısı" ? activeBrand : "",
-              activeStore !== "Hamısı" ? activeStore : ""
-            )
-          );
-        } else {
-          await dispatch(
+
+         await dispatch(
             getProductsListTest(
               apiPage,
               debouncedSearch,
               activeCategory !== "Hamısı" ? activeCategory : "",
-              activeBrand !== "Hamısı" ? activeBrand : "",
-              activeStore !== "Hamısı" ? activeStore : ""
+              // activeBrand !== "Hamısı" ? activeBrand : "",
+              // activeStore !== "Hamısı" ? activeStore : ""
             )
           );
-        }
+        
+        // if (activeCategory === "Yeni gələnlər") {
+        //   await dispatch(
+        //     getRecentProductsList(
+        //       apiPage,
+        //       debouncedSearch,
+        //       // activeBrand !== "Hamısı" ? activeBrand : "",
+        //       // activeStore !== "Hamısı" ? activeStore : ""
+        //     )
+        //   );
+        // } else {
+        //   await dispatch(
+        //     getProductsListTest(
+        //       apiPage,
+        //       debouncedSearch,
+        //       activeCategory !== "Hamısı" ? activeCategory : "",
+        //       // activeBrand !== "Hamısı" ? activeBrand : "",
+        //       // activeStore !== "Hamısı" ? activeStore : ""
+        //     )
+        //   );
+        // }
         
         console.log("Məhsullar yükləndi, səhifə:", apiPage);
       } catch (error) {
@@ -235,8 +243,8 @@ const FilterProducts = () => {
     currentPage,
     debouncedSearch,
     activeCategory,
-    activeBrand,
-    activeStore,
+    // activeBrand,
+    // activeStore,
   ]);
 
   // YENİ: Sadələşdirilmiş page click handler
@@ -263,15 +271,15 @@ const FilterProducts = () => {
     setActiveCategory(category);
   }, []);
 
-  const handleBrandSelect = useCallback((brand) => {
-    setActiveBrand(brand);
-    setBrandDropdownOpen(false);
-  }, []);
+  // const handleBrandSelect = useCallback((brand) => {
+  //   setActiveBrand(brand);
+  //   setBrandDropdownOpen(false);
+  // }, []);
 
-  const handleStoreSelect = useCallback((store) => {
-    setActiveStore(store);
-    setStoreDropdownOpen(false);
-  }, []);
+  // const handleStoreSelect = useCallback((store) => {
+  //   setActiveStore(store);
+  //   setStoreDropdownOpen(false);
+  // }, []);
 
   const handleSearchChange = useCallback((e) => {
     setSearchQuery(e.target.value);
@@ -279,7 +287,7 @@ const FilterProducts = () => {
 
   // Memoized calculations
   const pageCount = useMemo(() => {
-    const count = activeCategory === "Yeni gələnlər" ? count1 : count2;
+    const count =  count2;
     const calculated = Math.ceil(count / pageSize);
     console.log("Page count hesablandı:", calculated);
     return calculated;
@@ -298,7 +306,7 @@ const FilterProducts = () => {
   const categoryButtons = useMemo(() => {
     const categories = [
       { name: "Hamısı", key: "all" },
-      { name: "Yeni gələnlər", key: "new" },
+      // { name: "Yeni gələnlər", key: "new" },
       ...(categoryList?.map(cat => ({ name: cat.name, key: cat.id })) || [])
     ];
 
@@ -314,15 +322,15 @@ const FilterProducts = () => {
   }, [categoryList, activeCategory, handleCategoryClick]);
 
   // Memoized dropdown items
-  const brandItems = useMemo(() => [
-    { name: "Hamısı", key: "all-brands" },
-    ...(brandList?.map(brand => ({ name: brand.name, key: brand.id })) || [])
-  ], [brandList]);
+  // const brandItems = useMemo(() => [
+  //   { name: "Hamısı", key: "all-brands" },
+  //   ...(brandList?.map(brand => ({ name: brand.name, key: brand.id })) || [])
+  // ], [brandList]);
 
-  const storeItems = useMemo(() => [
-    { name: "Hamısı", key: "all-stores" },
-    ...(storeList?.map(store => ({ name: store.name, key: store.id })) || [])
-  ], [storeList]);
+  // const storeItems = useMemo(() => [
+  //   { name: "Hamısı", key: "all-stores" },
+  //   ...(storeList?.map(store => ({ name: store.name, key: store.id })) || [])
+  // ], [storeList]);
 
   // Debug information
   console.log("=== DEBUG INFO ===");
@@ -331,8 +339,8 @@ const FilterProducts = () => {
   console.log("Page Count:", pageCount);
   console.log("Loading:", loading);
   console.log("Active Category:", activeCategory);
-  console.log("Active Brand:", activeBrand);
-  console.log("Active Store:", activeStore);
+  // console.log("Active Brand:", activeBrand);
+  // console.log("Active Store:", activeStore);
  
   
   
@@ -381,7 +389,7 @@ useEffect(() => {
         </div>
 
         {/* Marka Dropdown */}
-        <div className="brand_dropdown_container" ref={brandDropdownRef}>
+        {/* <div className="brand_dropdown_container" ref={brandDropdownRef}>
           <button onClick={() => setBrandDropdownOpen((prev) => !prev)}>
             {activeBrand === "Hamısı" ? "Markalar" : activeBrand}
           </button>
@@ -398,10 +406,10 @@ useEffect(() => {
               ))}
             </div>
           )}
-        </div>
+        </div> */}
 
         {/* Brend (Store) Dropdown */}
-        <div className="brand_dropdown_container" ref={storeDropdownRef}>
+        {/* <div className="brand_dropdown_container" ref={storeDropdownRef}>
           <button onClick={() => setStoreDropdownOpen((prev) => !prev)}>
             {activeStore === "Hamısı" ? "Brendlər" : activeStore}
           </button>
@@ -418,7 +426,7 @@ useEffect(() => {
               ))}
             </div>
           )}
-        </div>
+        </div> */}
       </div>
 
       {/* Kateqoriyalar */}
@@ -432,7 +440,7 @@ useEffect(() => {
       ) : (
         /* Məhsullar */
         <>
-          {activeCategory === "Yeni gələnlər" ? (
+          {/* {activeCategory === "Yeni gələnlər" ? (
             latestProducts?.length === 0 ? (
               <div className="no_products_found">
                 <p>Məhsul tapılmadı</p>
@@ -440,13 +448,16 @@ useEffect(() => {
             ) : (
               <FilterProductsContainer newPr={true} productsList={latestProducts} />
             )
-          ) : normalProducts?.length === 0 ? (
+          ) : } */}
+          {
+            normalProducts?.length === 0 ? (
             <div className="no_products_found">
               <p>Məhsul tapılmadı</p>
             </div>
           ) : (
             <FilterProductsContainer productsList={normalProducts} />
-          )}
+          )
+          }
         </>
       )}
 

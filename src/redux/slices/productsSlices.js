@@ -8,8 +8,8 @@ const ProductsSlice = createSlice({
     next: null,
     previous: null,
     categoryList: [],
-    brandList: [],
-    storeList: [],
+    // brandList: [],
+    // storeList: [],
     productObj: {},
     recentProductsList: [],
      count1: 0,
@@ -43,12 +43,12 @@ const ProductsSlice = createSlice({
     getCategoryListFunc: (state, action) => {
       state.categoryList=action.payload
     },
-     getBrandListFunc: (state, action) => {
-      state.brandList=action.payload
-    },
-    getStoreListFunc: (state, action) => {
-      state.storeList=action.payload
-    },
+    //  getBrandListFunc: (state, action) => {
+    //   state.brandList=action.payload
+    // },
+    // getStoreListFunc: (state, action) => {
+    //   state.storeList=action.payload
+    // },
     getProductObjFunc: (state,action)=>{
       state.productObj=action.payload
     }
@@ -56,6 +56,6 @@ const ProductsSlice = createSlice({
 });
 
 export const ProductsReducer = ProductsSlice.reducer;
-export const { getProductsListFunc,getCategoryListFunc,getBrandListFunc,getStoreListFunc,getProductObjFunc,
+export const { getProductsListFunc,getCategoryListFunc,getProductObjFunc,
   getRecentProductsListFunc,getProductsListFuncTest
 } = ProductsSlice.actions;

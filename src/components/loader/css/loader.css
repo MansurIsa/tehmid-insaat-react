@@ -47,3 +47,9 @@
   width: 100%;
   z-index: 99999;
 }
+
+@media (max-width: 768px) {
+  .loader_container img{
+    width: 250px;
+  }
+}

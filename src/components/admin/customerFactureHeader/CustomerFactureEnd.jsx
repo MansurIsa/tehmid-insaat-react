@@ -69,8 +69,8 @@ const CustomerFactureEnd = ({ factureList = [] }) => {
               <th>Məhsul Adı</th>
               <th>Artikl</th>
               <th>Kateqoriya</th>
-              <th>Marka</th>
-              <th >Brend</th>
+              {/* <th>Marka</th> */}
+              {/* <th >Brend</th> */}
               <th>Miqdar</th>
               <th>Satış Qiyməti</th>
               <th>Ümumi məbləğ</th>
@@ -82,7 +82,7 @@ const CustomerFactureEnd = ({ factureList = [] }) => {
             {currentPageData.map((item, index) => (
               <tr key={item.id}>
                 <td className='print_column_number'>{offset + index + 1}</td>
-                <td className='table_article_scroll'>{item.product?.name || '—'} {item?.product?.degree}</td>
+                <td className='table_article_scroll'>{item.product?.name || '—'}</td>
                 <td className='table_article_scroll'>
                   <span className="screen-only">
                     {item.product?.articles?.map((art) => art.name).join(', ') || '—'}
@@ -92,8 +92,8 @@ const CustomerFactureEnd = ({ factureList = [] }) => {
                   </span>
                 </td>
                 <td>{item.product?.category?.name || '—'}</td>
-                <td>{item.product?.brand?.name || '—'}</td>
-                <td >{item.product?.store?.name || '—'}</td>
+                {/* <td>{item.product?.brand?.name || '—'}</td>
+                <td >{item.product?.store?.name || '—'}</td> */}
                 <td>{item.amount}</td>
                 <td>{item.price} ₼</td>
                 <td>{(item.amount * item.price).toFixed(2)} ₼</td>

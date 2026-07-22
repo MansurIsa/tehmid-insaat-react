@@ -73,9 +73,9 @@ const DashboardEnd = () => {
           <thead>
             <tr>
               <th>Məhsul Adı</th>
-              <th>Marka</th>
+              {/* <th>Marka</th> */}
               <th>Kateqoriya</th>
-              <th>Brend</th>
+              {/* <th>Brend</th> */}
               <th>Qalıq</th>
               {/* <th>Tarix</th> */}
               <th>Status</th>
@@ -101,9 +101,9 @@ const DashboardEnd = () => {
               return (
                 <tr key={index}>
                   <td>{item.name}</td>
-                  <td>{item.brand?.name}</td>
+                  {/* <td>{item.brand?.name}</td> */}
                   <td>{item.category?.name}</td>
-                  <td>{item.store?.name}</td>
+                  {/* <td>{item.store?.name}</td> */}
                   <td>{item.amount}</td>
                   {/* <td>{item.date}</td> */}
                   <td className={`status ${statusClass}`}>{statusText}</td>

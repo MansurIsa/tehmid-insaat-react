@@ -3,7 +3,7 @@ import AdminLayout from '../../layouts/adminLayout/AdminLayout';
 import './css/warehouse.css';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getBrandList, getCategoryList } from '../../actions/productsAction/productsAction';
+import {  getCategoryList } from '../../actions/productsAction/productsAction';
 import { getPurchaseList } from '../../actions/purchaseAction/purchaseAction';
 import { addStock } from '../../actions/stockActions/stockActions';
 import ReactPaginate from 'react-paginate';
@@ -11,28 +11,28 @@ import ReactPaginate from 'react-paginate';
 const NewWarehouse = () => {
     const [search, setSearch] = useState('');
     const [selectedIds, setSelectedIds] = useState([]); // ID-lər ilə işləyirik
-    const [selectedBrand, setSelectedBrand] = useState('');
+    // const [selectedBrand, setSelectedBrand] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const { categoryList, brandList } = useSelector((state) => state.products);
+    const { categoryList } = useSelector((state) => state.products);
     const { purchaseList, count } = useSelector((state) => state.purchase);
 
     useEffect(() => {
-        dispatch(getBrandList());
+        // dispatch(getBrandList());
         dispatch(getCategoryList());
     }, [dispatch]);
 
     useEffect(() => {
         let fullSearch = search.trim();
-        if (selectedBrand) fullSearch += (fullSearch ? ' ' : '') + selectedBrand;
+        // if (selectedBrand) fullSearch += (fullSearch ? ' ' : '') + selectedBrand;
         if (selectedCategory) fullSearch += (fullSearch ? ' ' : '') + selectedCategory;
 
         dispatch(getPurchaseList({ page: currentPage, search: fullSearch }));
-    }, [dispatch, currentPage, search, selectedBrand, selectedCategory]);
+    }, [dispatch, currentPage, search, selectedCategory]);
 
     // ID əsaslı toggle funksiyası
     const toggleRow = (id) => {
@@ -81,7 +81,7 @@ const NewWarehouse = () => {
                             onChange={(e) => setSearch(e.target.value)}
                         />
 
-                        <select
+                        {/* <select
                             value={selectedBrand}
                             onChange={(e) => setSelectedBrand(e.target.value)}
                         >
@@ -91,7 +91,7 @@ const NewWarehouse = () => {
                                     {b.name}
                                 </option>
                             ))}
-                        </select>
+                        </select> */}
 
                         <select
                             value={selectedCategory}

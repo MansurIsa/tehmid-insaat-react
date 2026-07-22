@@ -29,7 +29,8 @@ const ProductsTableEnd = ({ productsList }) => {
                         <tr>
                             <th>Məhsul Adı</th>
                             <th>Artikl</th>
-                            <th>Brend</th>
+                            {/* <th>Brend</th> */}
+                            <th>Ölçü vahidi</th>
                             <th>Miqdar</th>
                             <th>Maya Dəyəri</th>
                             <th>Alış Qiyməti</th>
@@ -42,11 +43,12 @@ const ProductsTableEnd = ({ productsList }) => {
                     <tbody>
                         {productsList?.map((item, index) => (
                             <tr key={index}>
-                                <td>{item?.name || "-"} {item?.degree || ""}</td>
+                                <td>{item?.name || "-"}</td>
                                 <td className='table_article_scroll'>
                                     {item?.articles?.map(a => a.name).join(', ') || "-"}
                                 </td>
-                                <td>{item?.store?.name || "-"}</td>
+                                {/* <td>{item?.store?.name || "-"}</td> */}
+                                <td>{item?.unit==="kg" ? "kiloqram" : item?.unit==="piece"? "ədəd": item?.unit==="meter"? "metr" : "-"}</td>
                                 <td>{item?.amount || "-"}</td>
                                 <td>{item?.cost_price ? item.cost_price + " ₼" : "-"}</td>
                                 <td>{item?.purchase_price} {currencyMap[item?.currency] || ""}</td>
