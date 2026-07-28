@@ -49,7 +49,7 @@ const IncomeSlice = createSlice({
             state.supplierDeletePaymentModal=false
         },
         getPaymentListFunc: (state, action) => {
-            state.paymentList = action.payload.results;
+            state.paymentList = action.payload;
              state.count = action.payload.count;
             state.next = action.payload.next;
             state.previous = action.payload.previous;

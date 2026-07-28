@@ -5,16 +5,41 @@ import { addProductToCart } from '../../../actions/productsAction/productsAction
 import { useDispatch } from 'react-redux'
 
 const ProductDetailContainer = ({ productObj, userObj }) => {
+
+    console.log(productObj);
+    
     const accessToken = localStorage.getItem("accessToken")
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
     const [openIndex, setOpenIndex] = useState(null)
-    const [quantity, setQuantity] = useState("0") // string olaraq dəyişdirildi
-    const [error, setError] = useState("") // error state əlavə edildi
+    const [quantity, setQuantity] = useState("0")
+    const [error, setError] = useState("")
 
-    // isPiece dəyişəni əlavə edildi
     const isPiece = productObj?.unit === "piece";
+
+    // ================== VAHİD FUNKSİYALARI ==================
+    
+    const getUnitDisplay = () => {
+        if (!productObj) return '-';
+        
+        if (productObj.unit === 'kg') return 'kq';
+        if (productObj.unit === 'metre') return 'm';
+        if (productObj.unit === 'piece') {
+            if (productObj.unit_weight) {
+                return `ədəd (${productObj.unit_weight} kq/ədəd)`;
+            }
+            if (productObj.unit_length) {
+                return `ədəd (${productObj.unit_length} m/ədəd)`;
+            }
+            return 'ədəd';
+        }
+        return '-';
+    };
+
+    const unitDisplay = getUnitDisplay();
+
+    // ================== MİQDAR IDARƏETMƏ ==================
 
     const toggleContent = (index) => {
         setOpenIndex(openIndex === index ? null : index)
@@ -27,7 +52,7 @@ const ProductDetailContainer = ({ productObj, userObj }) => {
         if (isPiece) {
             setQuantity(String(current + 1));
         } else {
-            setQuantity(String((current + 0.1).toFixed(2).replace(/\.00$/, "")));
+            setQuantity(String((current + 0.5).toFixed(2).replace(/\.00$/, "")));
         }
     }
 
@@ -43,7 +68,7 @@ const ProductDetailContainer = ({ productObj, userObj }) => {
         if (isPiece) {
             setQuantity(String(Math.max(current - 1, 0)));
         } else {
-            const value = Math.max(current - 0.1, 0);
+            const value = Math.max(current - 0.5, 0);
             setQuantity(String(value.toFixed(2).replace(/\.00$/, "")));
         }
     }
@@ -62,12 +87,10 @@ const ProductDetailContainer = ({ productObj, userObj }) => {
                 setError("Ədəd ilə satılan məhsullar üçün yalnız tam ədəd daxil edə bilərsiniz.");
                 return;
             }
-
             value = value.replace(/^0+(?=\d)/, "");
             setQuantity(value);
         } else {
             if (!/^\d*\.?\d*$/.test(value)) return;
-
             value = value.replace(/^0+(?=\d)/, "");
             setQuantity(value);
         }
@@ -77,12 +100,13 @@ const ProductDetailContainer = ({ productObj, userObj }) => {
         if (quantity === "" || quantity === "0") {
             setQuantity("1");
         }
-        // Əgər dəyər rəqəm deyilsə və ya mənfi rəqəmdirsə
         const num = Number(quantity);
         if (isNaN(num) || num < 0) {
             setQuantity("0");
         }
     }
+
+    // ================== SƏBƏT ƏMƏLİYYATLARI ==================
 
     const addToCart = () => {
         if (!accessToken) {
@@ -104,6 +128,8 @@ const ProductDetailContainer = ({ productObj, userObj }) => {
             product: productObj?.id
         }, navigate))
     }
+
+    // ================== RENDER ==================
 
     return (
         <div className='product_detail_page project_container'>
@@ -131,9 +157,9 @@ const ProductDetailContainer = ({ productObj, userObj }) => {
                                                 : 'filter_product_card_content_stock_red'
                                     }
                                 >
-                                    {+productObj?.amount > 20
+                                    {+productObj?.amount > 5
                                         ? 'Stokda var'
-                                        : +productObj?.amount > 0 && +productObj?.amount < 21
+                                        : +productObj?.amount > 0 && +productObj?.amount <=5
                                             ? 'Stokda tükənir'
                                             : 'Stokda bitib'}
                                 </span>
@@ -155,6 +181,28 @@ const ProductDetailContainer = ({ productObj, userObj }) => {
                                 <span key={i}>{x?.name}</span>
                             ))}
                         </div>
+                    </div>
+
+                    {/* ================== VAHİD MƏLUMATLARI (CƏMİ GÖSTƏRİLMİR) ================== */}
+                    <div className="product_unit_info_detail">
+                        <div className="unit_info_row">
+                            <span className="unit_label">Ölçü vahidi:</span>
+                            <span className="unit_value">{unitDisplay}</span>
+                        </div>
+                        
+                        {productObj?.unit === 'piece' && productObj?.unit_weight && (
+                            <div className="unit_info_row">
+                                <span className="unit_label">1 ədəd:</span>
+                                <span className="unit_extra">{productObj.unit_weight} kq</span>
+                            </div>
+                        )}
+                        
+                        {productObj?.unit === 'piece' && productObj?.unit_length && (
+                            <div className="unit_info_row">
+                                <span className="unit_label">1 ədəd:</span>
+                                <span className="unit_extra">{productObj.unit_length} m</span>
+                            </div>
+                        )}
                     </div>
 
                     <div className="product_detail_about_wrapper">
@@ -204,9 +252,9 @@ const ProductDetailContainer = ({ productObj, userObj }) => {
                             </p>
                         )}
                         
-                        {/* Ölçü vahidi göstəricisi əlavə edildi */}
+                        {/* Ölçü vahidi göstəricisi - qısa formada */}
                         <p className="filter_product_card_content">
-                            Ölçü vahidi:
+                            Vahid:
                             <span
                                 style={{
                                     fontWeight: "bold",
@@ -222,6 +270,16 @@ const ProductDetailContainer = ({ productObj, userObj }) => {
                                     ? "metr"
                                     : ""}
                             </span>
+                            {productObj?.unit === 'piece' && productObj?.unit_weight && (
+                                <span style={{ fontSize: '12px', color: '#888', marginLeft: '8px' }}>
+                                    (1 ədəd = {productObj.unit_weight} kq)
+                                </span>
+                            )}
+                            {productObj?.unit === 'piece' && productObj?.unit_length && (
+                                <span style={{ fontSize: '12px', color: '#888', marginLeft: '8px' }}>
+                                    (1 ədəd = {productObj.unit_length} m)
+                                </span>
+                            )}
                         </p>
 
                         <div className="inc_dec_pr">
@@ -234,6 +292,8 @@ const ProductDetailContainer = ({ productObj, userObj }) => {
                                 onBlur={handleInputBlur}
                                 style={{
                                     borderColor: error ? "red" : undefined,
+                                    width: '60px',
+                                    textAlign: 'center'
                                 }}
                             />
                             <button type="button" onClick={handleIncrement}>+</button>
@@ -242,7 +302,7 @@ const ProductDetailContainer = ({ productObj, userObj }) => {
                                 onClick={addToCart}
                                 className='add_to_cart_pr'
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <circle cx="9" cy="21" r="1" />
                                     <circle cx="20" cy="21" r="1" />
                                     <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />

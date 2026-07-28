@@ -393,3 +393,52 @@
   max-height: 300px;
   overflow-y: auto;
 }
+
+
+
+/* Stok statusu stilləri - mövcud CSS-yə əlavə edin və ya dəyişdirin */
+
+.filter_product_card_content_stock_red {
+  color: #FD1A1A;
+  background-color: #ffdcdc;
+  padding: 6px 14px;
+  display: inline-block;
+  border-radius: 20px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.filter_product_card_content_stock_orange {
+  color: #e37400;
+  background-color: #fff3cd;
+  padding: 6px 14px;
+  display: inline-block;
+  border-radius: 20px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.filter_product_card_content_stock_green {
+  color: #1e8e3e;
+  background-color: #d4edda;
+  padding: 6px 14px;
+  display: inline-block;
+  border-radius: 20px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+/* Vahid yazısı üçün */
+.filter_product_card_content p {
+  font-weight: 400;
+  font-size: 1.4rem;
+  line-height: 24px;
+  letter-spacing: 0%;
+  color: var(--gray8);
+  margin-top: 4px;
+  margin-bottom: 6px;
+}
+

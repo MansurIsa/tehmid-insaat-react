@@ -29,23 +29,85 @@ const Cart = () => {
 
   useEffect(() => {
     if (basketItem?.length > 0) {
+      // Yalnız stokda olan məhsulları seç
       const validIds = basketItem
-        .filter(item => item.product.amount > 0)
+        .filter(item => parseFloat(item.product.amount) > 0)
         .map(item => item.id);
       setSelectedItems(validIds);
     }
   }, [basketItem]);
 
-  const handleCheckboxChange = (item) => {
-    if (item.product.amount === 0) {
-      toast.error(`"${item.product.name}" məhsulu mövcud deyil`);
-      return;
+  // ================== VAHİD FUNKSİYALARI ==================
+  
+  const getMultiplier = (product) => {
+    if (!product) return 1;
+    
+    if (product.unit === 'piece') {
+      if (product.unit_weight) return parseFloat(product.unit_weight);
+      if (product.unit_length) return parseFloat(product.unit_length);
+      return 1;
     }
-    if (selectedItems.includes(item.id)) {
-      setSelectedItems(selectedItems.filter(itemId => itemId !== item.id));
-    } else {
-      setSelectedItems([...selectedItems, item.id]);
+    return 1;
+  };
+
+  const getUnitLabel = (unit) => {
+    switch(unit) {
+      case "piece": return "ədəd";
+      case "kg": return "kiloqram";
+      case "metre": return "metr";
+      default: return unit;
     }
+  };
+
+  const getUnitDisplay = (product) => {
+    if (!product) return '-';
+    
+    if (product.unit === 'kg') return 'kq';
+    if (product.unit === 'metre') return 'm';
+    if (product.unit === 'piece') {
+      if (product.unit_weight) {
+        return `ədəd (${product.unit_weight} kq/ədəd)`;
+      }
+      if (product.unit_length) {
+        return `ədəd (${product.unit_length} m/ədəd)`;
+      }
+      return 'ədəd';
+    }
+    return '-';
+  };
+
+  const getTotalMeasure = (item) => {
+    if (!item || !item.product) return null;
+    
+    const product = item.product;
+    const quantity = parseFloat(item.quantity) || 0;
+    const multiplier = getMultiplier(product);
+    
+    if (product.unit === 'piece') {
+      if (product.unit_weight || product.unit_length) {
+        return {
+          value: quantity * multiplier,
+          unit: product.unit_weight ? 'kq' : 'm'
+        };
+      }
+      return {
+        value: quantity,
+        unit: 'ədəd'
+      };
+    }
+    if (product.unit === 'kg') {
+      return {
+        value: quantity,
+        unit: 'kq'
+      };
+    }
+    if (product.unit === 'metre') {
+      return {
+        value: quantity,
+        unit: 'm'
+      };
+    }
+    return null;
   };
 
   const getPrice = (item) => {
@@ -55,9 +117,67 @@ const Cart = () => {
     return item.product.price;
   };
 
-  const totalAmount = basketItem
-    ?.filter(item => selectedItems.includes(item.id))
-    .reduce((sum, item) => sum + getPrice(item) * Number(item.quantity), 0) || 0;
+  // ================== MƏHSULUN ÜMUMİ DƏYƏRİ (vahidə görə) ==================
+  const getItemTotalValue = (item) => {
+    if (!item || !item.product) return 0;
+    
+    const multiplier = getMultiplier(item.product);
+    const quantity = parseFloat(item.quantity) || 0;
+    const price = parseFloat(getPrice(item)) || 0;
+    
+    return multiplier * quantity * price;
+  };
+
+  // ================== ÜMUMİ HESABLAMALAR ==================
+  
+  // Yalnız stokda olan və seçilmiş məhsulları hesabla
+  const validSelectedItems = basketItem?.filter(item => 
+    selectedItems.includes(item.id) && parseFloat(item.product.amount) > 0
+  ) || [];
+
+  // Ümumi məbləğ (vahidə görə)
+  const totalAmount = validSelectedItems.reduce(
+    (sum, item) => sum + getItemTotalValue(item),
+    0
+  );
+
+  // Seçilmiş məhsulların ümumi çəkisi/uzunluğu
+  const totalMeasure = validSelectedItems.reduce((sum, item) => {
+    const measure = getTotalMeasure(item);
+    return sum + (measure?.value || 0);
+  }, 0);
+
+  const getTotalMeasureUnit = () => {
+    if (validSelectedItems.length === 0) return '';
+    
+    const units = validSelectedItems.map(item => {
+      const measure = getTotalMeasure(item);
+      return measure?.unit;
+    }).filter(Boolean);
+    
+    if (units.length === 0) return '';
+    if (units.every(u => u === 'kq')) return 'kq';
+    if (units.every(u => u === 'm')) return 'm';
+    if (units.every(u => u === 'ədəd')) return 'ədəd';
+    return 'ümumi';
+  };
+
+  // ================== SƏBƏT ƏMƏLİYYATLARI ==================
+
+  const handleCheckboxChange = (item) => {
+    const stockAmount = parseFloat(item.product.amount) || 0;
+    
+    if (stockAmount === 0) {
+      toast.error(`"${item.product.name}" məhsulu stokda yoxdur!`);
+      return;
+    }
+    
+    if (selectedItems.includes(item.id)) {
+      setSelectedItems(selectedItems.filter(itemId => itemId !== item.id));
+    } else {
+      setSelectedItems([...selectedItems, item.id]);
+    }
+  };
 
   const handleConfirmOrder = () => {
     if (selectedItems.length === 0) return;
@@ -67,7 +187,7 @@ const Cart = () => {
     );
 
     const insufficientStockItems = selectedProducts.filter(
-      item => Number(item.quantity) > item.product.amount
+      item => parseFloat(item.quantity) > parseFloat(item.product.amount)
     );
 
     if (insufficientStockItems.length > 0) {
@@ -80,10 +200,10 @@ const Cart = () => {
     }
 
     const productIds = selectedProducts.map(item => item.product.id);
-    const quantities = selectedProducts.map(item => Number(item.quantity));
+    const quantities = selectedProducts.map(item => parseFloat(item.quantity));
 
     const total = selectedProducts.reduce(
-      (sum, item) => sum + getPrice(item) * Number(item.quantity),
+      (sum, item) => sum + getItemTotalValue(item),
       0
     );
 
@@ -101,13 +221,13 @@ const Cart = () => {
 
   const incCartEl = (item) => {
     const isPiece = item.product.unit === "piece";
-    const currentQty = Number(item.quantity) || 0;
+    const currentQty = parseFloat(item.quantity) || 0;
     let updatedQuantity;
     
     if (isPiece) {
       updatedQuantity = currentQty + 1;
     } else {
-      updatedQuantity = Number((currentQty + 0.5).toFixed(2));
+      updatedQuantity = parseFloat((currentQty + 0.5).toFixed(2));
     }
     
     dispatch(basketItemUpdate(item.id, {
@@ -119,13 +239,13 @@ const Cart = () => {
 
   const decCartEl = (item) => {
     const isPiece = item.product.unit === "piece";
-    const currentQty = Number(item.quantity) || 0;
+    const currentQty = parseFloat(item.quantity) || 0;
     let updatedQuantity;
     
     if (isPiece) {
       updatedQuantity = Math.max(currentQty - 1, 0);
     } else {
-      updatedQuantity = Math.max(Number((currentQty - 0.5).toFixed(2)), 0);
+      updatedQuantity = Math.max(parseFloat((currentQty - 0.5).toFixed(2)), 0);
     }
     
     if (updatedQuantity >= 0) {
@@ -168,7 +288,7 @@ const Cart = () => {
         toast.error("Düzgün miqdar daxil edin!");
         return;
       }
-      newQty = Number(newQty.toFixed(2));
+      newQty = parseFloat(newQty.toFixed(2));
     }
     
     if (newQty >= 0) {
@@ -192,22 +312,14 @@ const Cart = () => {
     }
   };
 
+  // Yalnız stokda olan məhsulların ID-ləri
   const validItemIds = basketItem
-    ?.filter(item => item.product.amount > 0)
+    ?.filter(item => parseFloat(item.product.amount) > 0)
     .map(item => item.id) || [];
 
   const isAllSelected =
     validItemIds.length > 0 &&
     validItemIds.every(id => selectedItems.includes(id));
-
-  const getUnitLabel = (unit) => {
-    switch(unit) {
-      case "piece": return "ədəd";
-      case "kg": return "kiloqram";
-      case "metre": return "metr";
-      default: return unit;
-    }
-  };
 
   return (
     <MainLayout>
@@ -262,8 +374,12 @@ const Cart = () => {
               <div className="cart_left_container">
                 {basketItem?.map(item => {
                   const isSelected = selectedItems.includes(item.id);
-                  const isOutOfStock = item.product.amount === 0;
+                  const stockAmount = parseFloat(item.product.amount) || 0;
+                  const isOutOfStock = stockAmount === 0;
                   const isPiece = item.product.unit === "piece";
+                  const unitDisplay = getUnitDisplay(item.product);
+                  const totalMeasure = getTotalMeasure(item);
+                  const itemTotalValue = getItemTotalValue(item);
                   
                   return (
                     <div key={item.id} className="cart_left_products_container">
@@ -271,7 +387,7 @@ const Cart = () => {
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                           <input
                             type="checkbox"
-                            checked={isSelected}
+                            checked={isSelected && !isOutOfStock}
                             disabled={isOutOfStock}
                             onChange={() => handleCheckboxChange(item)}
                             style={{ display: 'none' }}
@@ -285,10 +401,10 @@ const Cart = () => {
                               justifyContent: 'center',
                               width: '20px',
                               height: '20px',
-                              border: '2px solid #333',
+                              border: `2px solid ${isOutOfStock ? '#ff4444' : '#333'}`,
                               borderRadius: '4px',
                               cursor: isOutOfStock ? 'not-allowed' : 'pointer',
-                              backgroundColor: isSelected ? '#4caf50' : 'transparent',
+                              backgroundColor: isSelected && !isOutOfStock ? '#4caf50' : 'transparent',
                               position: 'relative',
                               color: 'white',
                               userSelect: 'none',
@@ -299,7 +415,7 @@ const Cart = () => {
                             title={isOutOfStock ? "Məhsul stokda yoxdur" : isSelected ? "Seçildi" : "Seçilməyib"}
                           >
                             {isOutOfStock ? (
-                              <AiOutlineClose color="red" size={16} />
+                              <span style={{ color: '#ff4444', fontSize: '16px', fontWeight: 'bold' }}>✕</span>
                             ) : (
                               isSelected && (
                                 <svg
@@ -326,30 +442,66 @@ const Cart = () => {
                             <h2 style={{ maxWidth: "300px", overflowWrap: "break-word" }}>
                               {item.product.name}{" "}
                               <span>({item?.product?.articles?.[0]?.name})</span>
+                              {isOutOfStock && (
+                                <span style={{ color: '#ff4444', fontSize: '12px', marginLeft: '8px' }}>
+                                  (Stokda yoxdur)
+                                </span>
+                              )}
                             </h2>
+                            {/* ================== VAHİD MƏLUMATLARI ================== */}
+                            <div style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
+                              <span>Vahid: {unitDisplay}</span>
+                              {totalMeasure && !isOutOfStock && (
+                                <span style={{ marginLeft: '10px' }}>
+                                  Cəmi: {totalMeasure.value.toFixed(2)} {totalMeasure.unit}
+                                </span>
+                              )}
+                              {!isOutOfStock && (
+                                <span style={{ marginLeft: '10px', color: '#1e8e3e' }}>
+                                  Qiymət: {itemTotalValue.toFixed(2)} AZN
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
 
-                        <span className="cart_left_first_price">
+                        <span className="cart_left_first_price" style={{ 
+                          color: isOutOfStock ? '#999' : 'inherit',
+                          textDecoration: isOutOfStock ? 'line-through' : 'none'
+                        }}>
                           {getPrice(item)} AZN
                         </span>
 
                         <div className="inc_dec">
-                          <button onClick={() => decCartEl(item)}>-</button>
+                          <button 
+                            onClick={() => decCartEl(item)}
+                            disabled={isOutOfStock}
+                            style={{ opacity: isOutOfStock ? 0.5 : 1 }}
+                          >
+                            -
+                          </button>
                           <input
                             type="text"
                             inputMode={isPiece ? "numeric" : "decimal"}
                             value={item.quantity}
                             onChange={(e) => updateQuantityDirect(item, e.target.value)}
+                            disabled={isOutOfStock}
                             style={{
                               width: '50px',
                               textAlign: 'center',
                               padding: '4px',
                               borderRadius: '4px',
-                              border: '1px solid #ccc'
+                              border: `1px solid ${isOutOfStock ? '#ff4444' : '#ccc'}`,
+                              opacity: isOutOfStock ? 0.6 : 1
                             }}
                           />
-                          <button onClick={() => incCartEl(item)}>+</button>
+                          <button 
+                            onClick={() => incCartEl(item)}
+                            disabled={isOutOfStock}
+                            style={{ opacity: isOutOfStock ? 0.5 : 1 }}
+                          >
+                            +
+                          </button>
                           <span style={{ fontSize: '12px', color: '#666', marginLeft: '4px' }}>
                             {getUnitLabel(item.product.unit)}
                           </span>
@@ -362,21 +514,35 @@ const Cart = () => {
                       </div>
                       
                       <div className="inc_dec inc_dec_resp">
-                        <button onClick={() => decCartEl(item)}>-</button>
+                        <button 
+                          onClick={() => decCartEl(item)}
+                          disabled={isOutOfStock}
+                          style={{ opacity: isOutOfStock ? 0.5 : 1 }}
+                        >
+                          -
+                        </button>
                         <input
                           type="text"
                           inputMode={isPiece ? "numeric" : "decimal"}
                           value={item.quantity}
                           onChange={(e) => updateQuantityDirect(item, e.target.value)}
+                          disabled={isOutOfStock}
                           style={{
                             width: '50px',
                             textAlign: 'center',
                             padding: '4px',
                             borderRadius: '4px',
-                            border: '1px solid #ccc'
+                            border: `1px solid ${isOutOfStock ? '#ff4444' : '#ccc'}`,
+                            opacity: isOutOfStock ? 0.6 : 1
                           }}
                         />
-                        <button onClick={() => incCartEl(item)}>+</button>
+                        <button 
+                          onClick={() => incCartEl(item)}
+                          disabled={isOutOfStock}
+                          style={{ opacity: isOutOfStock ? 0.5 : 1 }}
+                        >
+                          +
+                        </button>
                         <span style={{ fontSize: '12px', color: '#666', marginLeft: '4px' }}>
                           {getUnitLabel(item.product.unit)}
                         </span>
@@ -388,12 +554,26 @@ const Cart = () => {
 
               <div className="cart_right_container">
                 <p>Sifarişin məbləği <span>{totalAmount.toFixed(2)} AZN</span></p>
+                
+                {/* ================== ÜMUMİ ÇƏKİ/UZUNLUQ ================== */}
+                {/* {totalMeasure > 0 && validSelectedItems.length > 0 && (
+                  <p style={{ fontSize: '14px', color: '#666', marginTop: '8px' }}>
+                    Ümumi: {totalMeasure.toFixed(2)} {getTotalMeasureUnit()}
+                  </p>
+                )} */}
+                
                 <button
-                  disabled={selectedItems.length === 0}
+                  disabled={selectedItems.length === 0 || validSelectedItems.length === 0}
                   onClick={handleConfirmOrder}
                 >
                   Sifariş et
                 </button>
+                
+                {selectedItems.length > 0 && validSelectedItems.length === 0 && (
+                  <p style={{ fontSize: '12px', color: '#ff4444', marginTop: '8px' }}>
+                    Seçilmiş məhsullar stokda yoxdur!
+                  </p>
+                )}
               </div>
             </div>
           </div>

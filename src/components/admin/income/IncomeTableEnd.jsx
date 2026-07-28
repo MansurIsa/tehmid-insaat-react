@@ -54,7 +54,7 @@ const IncomeTableEnd = ({ paymentList, count, fetchPayments, searchTerm }) => {
             </tr>
           </thead>
           <tbody>
-            {paymentList?.map((item) => (
+            {paymentList?.results?.map((item) => (
               <tr key={item.id}>
                 <td>{item.customer?.first_name || '-'} {item.customer?.last_name || '-'}</td>
                 <td>{item.customer?.username || '-'}</td>
@@ -92,6 +92,8 @@ const IncomeTableEnd = ({ paymentList, count, fetchPayments, searchTerm }) => {
           nextClassName={'dashboard_end_arrow'}
           activeClassName={'dashboard_end_active'}
         />)}
+
+        <p>Ümumi Cəm: {paymentList?.total_amount}₼</p>
     </div>
   );
 };

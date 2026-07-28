@@ -3,23 +3,25 @@ import AdminLayout from '../../layouts/adminLayout/AdminLayout';
 import './css/purchase.css';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import {  getCategoryList, getProductsList } from '../../actions/productsAction/productsAction';
+import { getCategoryList, getProductsList } from '../../actions/productsAction/productsAction';
 import { updatePurchase } from '../../actions/purchaseAction/purchaseAction';
 import { getSupplierList } from '../../actions/loginAction/loginAction';
 import CustomSupplierSelect from './CustomSupplierSelect';
 import CustomProductSelect from './CustomProductSelect ';
 
-
 const UpdateNewPurchase = () => {
     const [formData, setFormData] = useState({
-        // brand: '',
         category: '',
         productId: '',
         supplierId: '',
         quantity: '',
         status: 'G',
         purchaseDate: '',
-        price: ''
+        price: '',
+        // Yeni sahələr
+        unit: '',
+        unit_weight: '',
+        unit_length: '',
     });
 
     const navigate = useNavigate();
@@ -32,7 +34,6 @@ const UpdateNewPurchase = () => {
     console.log(updatePurchaseObj);
     
     useEffect(() => {
-        // dispatch(getBrandList());
         dispatch(getCategoryList());
         dispatch(getProductsList());
         dispatch(getSupplierList());
@@ -41,7 +42,6 @@ const UpdateNewPurchase = () => {
     useEffect(() => {
         if (updatePurchaseObj) {
             setFormData({
-                // brand: updatePurchaseObj.product?.brand?.id || '',
                 category: updatePurchaseObj.product?.category?.id || '',
                 productId: updatePurchaseObj.product?.id || '',
                 supplierId: updatePurchaseObj.supplier || '',
@@ -49,6 +49,10 @@ const UpdateNewPurchase = () => {
                 status: updatePurchaseObj.status || 'G',
                 purchaseDate: updatePurchaseObj.date || '',
                 price: updatePurchaseObj.price || '',
+                // Yeni: məhsulun vahid məlumatları
+                unit: updatePurchaseObj.product?.unit || 'piece',
+                unit_weight: updatePurchaseObj.product?.unit_weight || '',
+                unit_length: updatePurchaseObj.product?.unit_length || '',
             });
         }
     }, [updatePurchaseObj]);
@@ -61,8 +65,49 @@ const UpdateNewPurchase = () => {
         }));
     };
 
+    // Məhsul seçildikdə vahid məlumatlarını yenilə
+    const handleProductSelect = (productId) => {
+        const selectedProduct = productsList.find(p => p.id === +productId);
+        if (selectedProduct) {
+            setFormData(prev => ({
+                ...prev,
+                productId: productId,
+                unit: selectedProduct.unit || 'piece',
+                unit_weight: selectedProduct.unit_weight || '',
+                unit_length: selectedProduct.unit_length || '',
+            }));
+        } else {
+            setFormData(prev => ({ ...prev, productId: productId }));
+        }
+    };
+
+    // Ölçü vahidini göstərmək üçün
+    const getUnitDisplay = () => {
+        if (formData.unit === 'kg') return 'Kiloqram';
+        if (formData.unit === 'metre') return 'Metr';
+        if (formData.unit === 'piece') {
+            let display = 'Ədəd';
+            if (formData.unit_weight) {
+                display += ` (${formData.unit_weight} kq)`;
+            } else if (formData.unit_length) {
+                display += ` (${formData.unit_length} m)`;
+            }
+            return display;
+        }
+        return '-';
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        // Əgər unit 'piece' dirsə, miqdar tam ədəd olmalıdır
+        if (formData.unit === 'piece' && formData.quantity) {
+            const qty = parseFloat(formData.quantity);
+            if (!Number.isInteger(qty)) {
+                alert('Ədəd üçün miqdar tam ədəd olmalıdır.');
+                return;
+            }
+        }
 
         const payload = {
             product: +formData.productId,
@@ -81,7 +126,6 @@ const UpdateNewPurchase = () => {
     };
 
     const filteredProducts = productsList.filter(p =>
-        
         (!formData.category || p.category?.id === +formData.category)
     );
 
@@ -98,8 +142,28 @@ const UpdateNewPurchase = () => {
                         <CustomProductSelect
                             products={filteredProducts}
                             value={formData.productId}
-                            onChange={(id) => setFormData(prev => ({ ...prev, productId: id }))}
+                            onChange={handleProductSelect}
                         />
+
+                        {/* Məhsulun vahid məlumatını göstər */}
+                        {formData.productId && (
+                            <div className="form_group" style={{ gridColumn: 'span 2' }}>
+                                <div style={{ 
+                                    padding: '8px 12px', 
+                                    backgroundColor: '#e8f0fe', 
+                                    borderRadius: '4px',
+                                    fontSize: '14px',
+                                    color: '#333'
+                                }}>
+                                    <strong>Ölçü vahidi:</strong> {getUnitDisplay()}
+                                    {formData.unit === 'piece' && (formData.unit_weight || formData.unit_length) && (
+                                        <span style={{ marginLeft: '10px', color: '#666', fontSize: '13px' }}>
+                                            {formData.unit_weight ? `1 ədəd = ${formData.unit_weight} kq` : `1 ədəd = ${formData.unit_length} m`}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        )}
 
                         <div className="form_group">
                             <label>Miqdar</label>
@@ -107,10 +171,17 @@ const UpdateNewPurchase = () => {
                                 type="number"
                                 name="quantity"
                                 placeholder="Miqdarı daxil edin"
+                                step={formData.unit === 'piece' ? '1' : '0.01'}
                                 value={formData.quantity}
                                 onChange={handleChange}
                             />
+                            {formData.unit === 'piece' && (
+                                <small style={{ color: '#666', display: 'block', marginTop: '4px' }}>
+                                    Tam ədəd daxil edin
+                                </small>
+                            )}
                         </div>
+
                         <div className="form_group">
                             <label>Alış Qiyməti</label>
                             <input

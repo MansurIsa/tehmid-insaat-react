@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCategoryList, updateProduct } from '../../actions/productsAction/productsAction';
 import CustomSelect from './CustomSelect';
-import EditableContent from './EditableContent';  // assuming EditableContent is the editable content component
+import EditableContent from './EditableContent';
 
 const UpdateNewProducts = () => {
     const [formData, setFormData] = useState({
@@ -13,8 +13,6 @@ const UpdateNewProducts = () => {
         articles: [''],
         article_ids: [null],
         category: '',
-        // brand: '',
-        // store: '',
         titles: [''],
         contents: [''],
         about_ids: [],
@@ -25,13 +23,12 @@ const UpdateNewProducts = () => {
         purchasePrice: '',
         salePrice: '',
         discountPrice: '',
-        // degree: ''
         unit: 'piece',
+        unit_weight: '',      // Yeni: ədədin çəkisi (kq)
+        unit_length: '',      // Yeni: ədədin uzunluğu (metr)
     });
 
     const [previewUrl, setPreviewUrl] = useState(null);
-
-
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -39,17 +36,10 @@ const UpdateNewProducts = () => {
     const { productUpdateObj } = useSelector(state => state.productTable);
     const { categoryList } = useSelector(state => state.products);
 
-    console.log(productUpdateObj);
-
-
-    // Load categories, brands, stores on mount
+    // Load categories on mount
     useEffect(() => {
         dispatch(getCategoryList());
-        // dispatch(getBrandList());
-        // dispatch(getStoreList());
     }, [dispatch]);
-    console.log(productUpdateObj);
-
 
     // Load product initial data into formData when productUpdateObj changes
     useEffect(() => {
@@ -59,14 +49,12 @@ const UpdateNewProducts = () => {
                 articles:
                     productUpdateObj.articles && productUpdateObj.articles.length > 0
                         ? productUpdateObj.articles.map(a => typeof a === 'string' ? a : a.name)
-                        : [''],  // boş olduqda 1 boş input üçün array
+                        : [''],
                 article_ids:
                     productUpdateObj.articles && productUpdateObj.articles.length > 0
                         ? productUpdateObj.articles.map(a => a.id)
                         : [null],
                 category: productUpdateObj.category?.id || '',
-                // brand: productUpdateObj.brand?.id || '',
-                // store: productUpdateObj.store?.id || '',
                 titles: productUpdateObj.product_abouts?.map(a => a.title) || [''],
                 contents: productUpdateObj.product_abouts?.map(a => a.content) || [''],
                 about_ids: productUpdateObj.product_abouts?.map(a => a.id) || [],
@@ -77,17 +65,13 @@ const UpdateNewProducts = () => {
                 purchasePrice: productUpdateObj.purchase_price || '',
                 salePrice: productUpdateObj.price || '',
                 discountPrice: productUpdateObj.discount_price || '',
-                // degree: productUpdateObj?.degree?.replaceAll('"',"") || ''
-                unit: productUpdateObj.unit || 'piece'
-
+                unit: productUpdateObj.unit || 'piece',
+                unit_weight: productUpdateObj.unit_weight || '',
+                unit_length: productUpdateObj.unit_length || '',
             });
             setPreviewUrl(productUpdateObj.image || null);
         }
     }, [productUpdateObj]);
-
-    console.log(productUpdateObj);
-
-
 
     // Handlers
     const handleChange = (e) => {
@@ -95,6 +79,17 @@ const UpdateNewProducts = () => {
         setFormData(prev => ({
             ...prev,
             [name]: value
+        }));
+    };
+
+    // Unit dəyişdikdə unit_weight və unit_length-i təmizlə
+    const handleUnitChange = (e) => {
+        const value = e.target.value;
+        setFormData(prev => ({
+            ...prev,
+            unit: value,
+            unit_weight: value === 'piece' ? prev.unit_weight : '',
+            unit_length: value === 'piece' ? prev.unit_length : '',
         }));
     };
 
@@ -110,7 +105,7 @@ const UpdateNewProducts = () => {
 
         setFormData(prev => ({
             ...prev,
-            articles: newArticles.length > 0 ? newArticles : [''],    // boş qalmasın
+            articles: newArticles.length > 0 ? newArticles : [''],
             article_ids: newArticleIds.length > 0 ? newArticleIds : [null],
         }));
     };
@@ -140,7 +135,7 @@ const UpdateNewProducts = () => {
             ...prev,
             titles: [...prev.titles, ''],
             contents: [...prev.contents, ''],
-            about_ids: [...prev.about_ids, null], // new id slot
+            about_ids: [...prev.about_ids, null],
         }));
     };
 
@@ -173,39 +168,15 @@ const UpdateNewProducts = () => {
                 : content
         );
 
-
         const form = new FormData();
 
-        // Articles: bütün adlar
-        const allArticles = formData.articles;
-
-        console.log(formData);
-
-        const existingArticleIds = formData.article_ids.filter(id => id);
-
-        console.log(existingArticleIds);
-
-
-
-        const allTitles = formData.titles;
-        const allContents = formData.contents;
-
-        // About IDs: yalnız mövcud olanlar
-        const existingAboutIds = formData.about_ids.filter(id => id);
-
-        // Form məlumatlarını əlavə et
         form.append('name', formData.name);
         form.append('articles', JSON.stringify(formData.articles));
         form.append('article_ids', JSON.stringify(formData.article_ids.filter(id => id)));
-
-
-        form.append('titles', JSON.stringify(allTitles));             // bütün titles
-        form.append('contents', JSON.stringify(sanitizedContents));         // bütün contents
-        form.append('about_ids', JSON.stringify(existingAboutIds));   // yalnız mövcud ID-lər
-
+        form.append('titles', JSON.stringify(formData.titles));
+        form.append('contents', JSON.stringify(sanitizedContents));
+        form.append('about_ids', JSON.stringify(formData.about_ids.filter(id => id)));
         form.append('category', +formData.category);
-        // form.append('brand', +formData.brand);
-        // form.append('store', +formData.store);
         form.append('amount', formData.amount);
         form.append('cost_price', formData.costPrice);
         form.append('currency', formData.purchaseCurrency);
@@ -213,17 +184,24 @@ const UpdateNewProducts = () => {
         form.append('price', formData.salePrice);
         form.append('discount_price', formData.discountPrice);
         form.append('unit', formData.unit);
-        // form.append('degree', formData.degree);
+
+        // Yeni sahələr - yalnız 'piece' üçün göndər
+        if (formData.unit === 'piece') {
+            if (formData.unit_weight) {
+                form.append('unit_weight', formData.unit_weight);
+            }
+            if (formData.unit_length) {
+                form.append('unit_length', formData.unit_length);
+            }
+        }
 
         if (formData.image) {
             form.append('image', formData.image);
         }
 
         console.log(Object.fromEntries(form.entries()));
-
         dispatch(updateProduct(productUpdateObj?.id, form, navigate));
     };
-
 
     const returnToProducts = () => {
         navigate("/products-table");
@@ -262,7 +240,6 @@ const UpdateNewProducts = () => {
                                     />
                                     {formData.articles.length > 1 && (
                                         <button type="button" onClick={() => removeArticle(index)}>
-                                            {/* SVG toxunma */}
                                             <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
                                                 <path d="M1.5 7.5C1.5 7.2 1.6 7 1.8 6.8C2 6.6 2.2 6.5 2.5 6.5H12.5C12.8 6.5 13 6.6 13.2 6.8C13.4 7 13.5 7.2 13.5 7.5C13.5 7.8 13.4 8 13.2 8.2C13 8.4 12.8 8.5 12.5 8.5H2.5C2.2 8.5 2 8.4 1.8 8.2C1.6 8 1.5 7.8 1.5 7.5Z" fill="#D60000" />
                                             </svg>
@@ -270,7 +247,6 @@ const UpdateNewProducts = () => {
                                     )}
                                     {index === formData.articles.length - 1 && (
                                         <button type="button" onClick={addArticle}>
-                                            {/* SVG toxunma */}
                                             <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
                                                 <path d="M13.5 8.5H8.5V13.5C8.5 13.8 8.4 14 8.2 14.2C8 14.4 7.8 14.5 7.5 14.5C7.2 14.5 7 14.4 6.8 14.2C6.6 14 6.5 13.8 6.5 13.5V8.5H1.5C1.2 8.5 1 8.4 0.8 8.2C0.6 8 0.5 7.8 0.5 7.5C0.5 7.2 0.6 7 0.8 6.8C1 6.6 1.2 6.5 1.5 6.5H6.5V1.5C6.5 1.2 6.6 1 6.8 0.8C7 0.6 7.2 0.5 7.5 0.5C7.8 0.5 8 0.6 8.2 0.8C8.4 1 8.5 1.2 8.5 1.5V6.5H13.5C13.8 6.5 14 6.6 14.2 6.8C14.4 7 14.5 7.2 14.5 7.5C14.5 7.8 14.4 8 14.2 8.2C14 8.4 13.8 8.5 13.5 8.5Z" fill="#202020" />
                                             </svg>
@@ -288,42 +264,68 @@ const UpdateNewProducts = () => {
                             placeholder="Kateqoriya seçin"
                         />
 
-                        {/* <CustomSelect
-                            label="Marka"
-                            options={brandList}
-                            value={formData.brand}
-                            onChange={id => setFormData(prev => ({ ...prev, brand: id }))}
-                            placeholder="Marka seçin"
-                        />
-
-                        <CustomSelect
-                            label="Brend"
-                            options={storeList}
-                            value={formData.store}
-                            onChange={id => setFormData(prev => ({ ...prev, store: id }))}
-                            placeholder="Brend seçin"
-                        /> */}
                         <div className="form_group">
                             <label>Ölçü vahidi</label>
                             <select
                                 name="unit"
                                 value={formData.unit}
-                                onChange={handleChange}
+                                onChange={handleUnitChange}
                             >
                                 <option value="piece">Ədəd</option>
                                 <option value="kg">Kiloqram</option>
                                 <option value="metre">Metr</option>
                             </select>
                         </div>
+
+                        {/* Əgər unit 'piece' seçilibsə, çəki və uzunluq sahələrini göstər */}
+                        {formData.unit === 'piece' && (
+                            <div style={{ display: 'flex', gap: '20px', gridColumn: 'span 2' }}>
+                                <div className="form_group" style={{ flex: 1 }}>
+                                    <label>Ədədin çəkisi (kq) <small>(opsional)</small></label>
+                                    <input
+                                        type="number"
+                                        name="unit_weight"
+                                        step="0.01"
+                                        placeholder="Məsələn: 20"
+                                        value={formData.unit_weight}
+                                        onChange={handleChange}
+                                    />
+                                    <small style={{ color: '#666', display: 'block', marginTop: '4px' }}>
+                                        1 ədədin neçə kq olduğu (məsələn: 20 kq-lıq qutu)
+                                    </small>
+                                </div>
+                                <div className="form_group" style={{ flex: 1 }}>
+                                    <label>Ədədin uzunluğu (metr) <small>(opsional)</small></label>
+                                    <input
+                                        type="number"
+                                        name="unit_length"
+                                        step="0.01"
+                                        placeholder="Məsələn: 5"
+                                        value={formData.unit_length}
+                                        onChange={handleChange}
+                                    />
+                                    <small style={{ color: '#666', display: 'block', marginTop: '4px' }}>
+                                        1 ədədin neçə metr olduğu (məsələn: 5 metrlik boru)
+                                    </small>
+                                </div>
+                            </div>
+                        )}
+
                         <div className="form_group">
                             <label>Miqdar</label>
                             <input
                                 type="number"
                                 name="amount"
+                                step={formData.unit === 'piece' ? '1' : '0.01'}
                                 value={formData.amount}
                                 onChange={handleChange}
                                 placeholder="Miqdarı daxil edin"
                             />
+                            {formData.unit === 'piece' && (
+                                <small style={{ color: '#666', display: 'block', marginTop: '4px' }}>
+                                    Ədəd üçün miqdar tam ədəd olmalıdır
+                                </small>
+                            )}
                         </div>
 
                         <div className="form_group">
@@ -422,7 +424,6 @@ const UpdateNewProducts = () => {
                                 <span>Şəkil əlavə et</span>
                                 <input type="file" accept="image/*" onChange={handleImageChange} hidden />
                                 <span className="plus_icon">
-                                    {/* SVG toxunma */}
                                     <svg
                                         width="24"
                                         height="24"
@@ -450,24 +451,13 @@ const UpdateNewProducts = () => {
                             </label>
                         )}
                     </div>
-                    {/* <div className="form_group">
-                        <label>Dərəcə</label>
-                        <input
-                            type="text"
-                            name="degree"
-                            value={formData.degree}
-                            onChange={handleChange}
-                            placeholder="Dərəcə daxil edin"
-                        />
-                    </div> */}
 
-                    {/* Başlıq və Məzmun hissəsi alt-alta */}
+                    {/* Başlıq və Məzmun hissəsi */}
                     <div className="form_group about_section">
                         <label>Başlıqlar və Məzmunlar</label>
 
                         {formData.titles.map((title, idx) => (
                             <div key={idx} style={{ marginBottom: '20px' }}>
-                                {/* Title input */}
                                 <input
                                     type="text"
                                     placeholder="Başlıq daxil edin"
@@ -484,13 +474,11 @@ const UpdateNewProducts = () => {
                                     }}
                                 />
 
-                                {/* Content editable */}
                                 <EditableContent
                                     value={formData.contents[idx]}
                                     onChange={html => handleContentChange(idx, html)}
                                 />
 
-                                {/* Sil və əlavə et düymələri */}
                                 <div style={{ marginTop: '6px', display: 'flex', gap: '10px' }}>
                                     {formData.titles.length > 1 && (
                                         <button

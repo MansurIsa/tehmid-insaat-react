@@ -7,21 +7,23 @@ import CustomCustomerSelect from "../../components/admin/salesTableHead/CustomCu
 const MonthYearSelect = () => {
   const today = new Date();
   const currentYear = String(today.getFullYear());
+  const currentMonth = today.getMonth() + 1; // 1-12
 
+  // Aylar - value olaraq rəqəm (1-12), "All" üçün 0
   const months = [
-    { value: "All", label: "Bütün aylar" },
-    { value: "Yanvar", label: "Yanvar" },
-    { value: "Fevral", label: "Fevral" },
-    { value: "Mart", label: "Mart" },
-    { value: "Aprel", label: "Aprel" },
-    { value: "May", label: "May" },
-    { value: "Iyun", label: "İyun" },
-    { value: "Iyul", label: "İyul" },
-    { value: "Avqust", label: "Avqust" },
-    { value: "Sentyabr", label: "Sentyabr" },
-    { value: "Oktyabr", label: "Oktyabr" },
-    { value: "Noyabr", label: "Noyabr" },
-    { value: "Dekabr", label: "Dekabr" },
+    { value: 0, label: "Bütün aylar" },
+    { value: 1, label: "Yanvar" },
+    { value: 2, label: "Fevral" },
+    { value: 3, label: "Mart" },
+    { value: 4, label: "Aprel" },
+    { value: 5, label: "May" },
+    { value: 6, label: "İyun" },
+    { value: 7, label: "İyul" },
+    { value: 8, label: "Avqust" },
+    { value: 9, label: "Sentyabr" },
+    { value: 10, label: "Oktyabr" },
+    { value: 11, label: "Noyabr" },
+    { value: 12, label: "Dekabr" },
   ];
 
   const years = Array.from({ length: 101 }, (_, i) => 2000 + i);
@@ -29,39 +31,49 @@ const MonthYearSelect = () => {
   const dispatch = useDispatch();
   const { usersList, userObj } = useSelector((state) => state.login);
 
-  // Local state, localStorage-dan oxunur
+  // ================== STATE ==================
   const [selectedYear, setSelectedYear] = useState(() => {
     const storedYear = localStorage.getItem("selectedYear");
-    return storedYear || currentYear; // yeni il gəlibsə hazırkı il
+    return storedYear || currentYear;
   });
 
   const [selectedMonth, setSelectedMonth] = useState(() => {
-    return localStorage.getItem("selectedMonth") || months[today.getMonth()].value;
+    const storedMonth = localStorage.getItem("selectedMonth");
+    if (storedMonth !== null && storedMonth !== "undefined" && storedMonth !== "") {
+      const parsed = parseInt(storedMonth);
+      if (!isNaN(parsed)) {
+        return parsed;
+      }
+    }
+    return currentMonth;
   });
 
   const [selectedCustomerId, setSelectedCustomerId] = useState(() => {
-    return localStorage.getItem("selectedCustomerId") || null;
+    const stored = localStorage.getItem("selectedCustomerId");
+    if (stored !== null && stored !== "undefined" && stored !== "") {
+      return stored;
+    }
+    return null;
   });
 
-  // İlk load üçün user list və user obj
+  // ================== USER LOAD ==================
   useEffect(() => {
     dispatch(getUsersList());
     dispatch(getUserObj());
   }, [dispatch]);
 
-  // Superuser üçün default customer seçimi
+  // ================== SUPERSUSER ÜÇÜN DEFAULT CUSTOMER ==================
   useEffect(() => {
     if (userObj?.is_superuser) {
-      const defaultCustomerId = selectedCustomerId || userObj.id;
+      const defaultCustomerId = selectedCustomerId || String(userObj.id);
       setSelectedCustomerId(defaultCustomerId);
       localStorage.setItem("selectedCustomerId", defaultCustomerId);
     }
   }, [userObj]);
 
-  // Yalnız is_staff == true olan user-lər filterlənir
+  // ================== STAFF USERS ==================
   const staffUsers = usersList.filter((u) => u.is_staff);
 
-  // Search üçün API call
   const handleSearch = (searchTerm) => {
     if (!searchTerm.trim()) {
       dispatch(getUsersList());
@@ -70,43 +82,59 @@ const MonthYearSelect = () => {
     }
   };
 
-  // Ay, İl və Customer dəyişəndə API çağırışı
+  // ================== API CALL ==================
   useEffect(() => {
     if (!userObj) return;
 
     const customerIdToSend =
       userObj?.is_superuser && selectedCustomerId
         ? selectedCustomerId
-        : userObj?.id;
+        : String(userObj?.id);
 
     if (customerIdToSend) {
-      dispatch(getDashboardList(customerIdToSend, selectedMonth, selectedYear));
+      // Ay rəqəmi 0-dırsa "All" göndər, yoxsa rəqəmi göndər
+      const monthParam = selectedMonth === 0 ? "All" : selectedMonth;
+      
+      console.log("📊 Dashboard request:", {
+        customerId: customerIdToSend,
+        month: monthParam,
+        year: selectedYear,
+        selectedMonth: selectedMonth,
+      });
+      
+      dispatch(getDashboardList(customerIdToSend, monthParam, selectedYear));
     }
   }, [selectedMonth, selectedYear, selectedCustomerId, userObj, dispatch]);
 
-  // Ay dəyişəndə state + localStorage
-  const handleMonthChange = (month) => {
-    setSelectedMonth(month);
-    localStorage.setItem("selectedMonth", month);
+  // ================== HANDLERS ==================
+  const handleMonthChange = (e) => {
+    const value = parseInt(e.target.value);
+    console.log("📅 Month changed:", value);
+    setSelectedMonth(value);
+    localStorage.setItem("selectedMonth", String(value));
   };
 
-  // İl dəyişəndə state + localStorage
-  const handleYearChange = (year) => {
-    setSelectedYear(year);
-    localStorage.setItem("selectedYear", year);
+  const handleYearChange = (e) => {
+    const value = e.target.value;
+    console.log("📅 Year changed:", value);
+    setSelectedYear(value);
+    localStorage.setItem("selectedYear", value);
   };
 
-  // Customer dəyişəndə state + localStorage
   const handleCustomerChange = (id) => {
+    console.log("👤 Customer changed:", id);
     setSelectedCustomerId(id);
     localStorage.setItem("selectedCustomerId", id);
   };
+
+  
 
   return (
     <div className="admin_container">
       <div className="month_year_select">
         <div className="form_group">
-          <select value={selectedYear} onChange={(e) => handleYearChange(e.target.value)}>
+          <label>İl</label>
+          <select value={selectedYear} onChange={handleYearChange}>
             <option value="">İl seçin</option>
             {years.map((year) => (
               <option key={year} value={year}>
@@ -117,8 +145,8 @@ const MonthYearSelect = () => {
         </div>
 
         <div className="form_group">
-          <select value={selectedMonth} onChange={(e) => handleMonthChange(e.target.value)}>
-            <option value="">Ay seçin</option>
+          <label>Ay</label>
+          <select value={selectedMonth} onChange={handleMonthChange}>
             {months.map((month) => (
               <option key={month.value} value={month.value}>
                 {month.label}
@@ -128,13 +156,16 @@ const MonthYearSelect = () => {
         </div>
 
         {userObj?.is_superuser && (
-          <CustomCustomerSelect
-            displayVal={false}
-            customers={staffUsers}
-            value={selectedCustomerId}
-            onChange={handleCustomerChange}
-            onSearch={handleSearch}
-          />
+          <div className="form_group">
+            <label>Satıcı</label>
+            <CustomCustomerSelect
+              displayVal={false}
+              customers={staffUsers}
+              value={selectedCustomerId}
+              onChange={handleCustomerChange}
+              onSearch={handleSearch}
+            />
+          </div>
         )}
       </div>
     </div>

@@ -12,27 +12,27 @@ import './css/salesChart.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { getChartsDashboardList } from '../../../../actions/dashboardAction/dashboardAction';
 import { getUserObj, getUsersList } from '../../../../actions/loginAction/loginAction';
-// import { getBrandList } from '../../../../actions/productsAction/productsAction';
 import CustomCustomerSelect from '../../../../components/admin/salesTableHead/CustomCustomerSelect';
 
 const SalesChart = () => {
   const dispatch = useDispatch();
   const [filterType, setFilterType] = useState('A'); // "A" - aylıq, "I" - illik
   const [selectedCustomer, setSelectedCustomer] = useState('');
-  // const [selectedBrand, setSelectedBrand] = useState('0'); // default: 0 = bütün markalar
+  const [selectedYear, setSelectedYear] = useState(() => {
+    // localStorage-dan il oxu
+    const storedYear = localStorage.getItem("selectedYear");
+    return storedYear || new Date().getFullYear();
+  });
 
   const { usersList, userObj } = useSelector(state => state.login);
   const { chartObj } = useSelector(state => state.dashboard);
-  // const { brandList } = useSelector(state => state.products);
 
   console.log(usersList);
-  
 
   // Başlanğıc load
   useEffect(() => {
-    dispatch(getUsersList(1,""));
+    dispatch(getUsersList(1, ""));
     dispatch(getUserObj());
-    // dispatch(getBrandList());
   }, [dispatch]);
 
   // Superuser üçün default selected
@@ -44,15 +44,22 @@ const SalesChart = () => {
 
   // Chart üçün API çağırış
   useEffect(() => {
-    // if (!userObj || selectedBrand === '') return;
+    if (!userObj) return;
 
     const idToSend =
       userObj.is_superuser && selectedCustomer
         ? selectedCustomer
         : userObj.id;
 
-    dispatch(getChartsDashboardList(idToSend, filterType));
-  }, [dispatch, filterType, selectedCustomer, userObj]);
+    // year parametrini göndər
+    console.log("📊 Charts request:", {
+      id: idToSend,
+      filterType: filterType,
+      year: selectedYear,
+    });
+
+    dispatch(getChartsDashboardList(idToSend, filterType, selectedYear));
+  }, [dispatch, filterType, selectedCustomer, userObj, selectedYear]);
 
   // Backend search handler
   const handleSearch = (searchTerm) => {
@@ -63,6 +70,13 @@ const SalesChart = () => {
     }
   };
 
+  // İl dəyişdikdə localStorage-a yaz
+  const handleYearChange = (e) => {
+    const year = e.target.value;
+    setSelectedYear(year);
+    localStorage.setItem("selectedYear", year);
+  };
+
   const salesData = chartObj
     ? Object.entries(chartObj).map(([key, value]) => ({
         label: key,
@@ -70,40 +84,37 @@ const SalesChart = () => {
       }))
     : [];
 
+  // İllərin siyahısı (2000-dən cari ilə qədər)
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 101 }, (_, i) => 2000 + i);
+
   return (
     <div className="sales_chart_container admin_container">
-       <h3>Satışın dinamikası</h3>
+      <h3>Satışın dinamikası</h3>
       <div className="chart_header">
-       
         <div className="chart_controls">
-
-          {/* Superuser üçün Customer Select */}
-          {userObj?.is_superuser && (
-            // <div className="form_group">
-              <CustomCustomerSelect
-                displayVal={false}
-                customers={usersList}
-                value={selectedCustomer}
-                onChange={(id) => setSelectedCustomer(id)}
-                onSearch={handleSearch}
-              />
-            // </div>
-          )}
-
-          {/* Brand select */}
-          {/* <div className="form_group">
-            <select
-              value={selectedBrand}
-              onChange={(e) => setSelectedBrand(e.target.value)}
-            >
-              <option value="0">Bütün markalar</option>
-              {brandList?.map(brand => (
-                <option key={brand.id} value={brand.id}>
-                  {brand.name}
+          {/* İl seçimi */}
+          <div className="form_group">
+            <select value={selectedYear} onChange={handleYearChange}>
+              <option value="">İl seçin</option>
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year}
                 </option>
               ))}
             </select>
-          </div> */}
+          </div>
+
+          {/* Superuser üçün Customer Select */}
+          {userObj?.is_superuser && (
+            <CustomCustomerSelect
+              displayVal={false}
+              customers={usersList}
+              value={selectedCustomer}
+              onChange={(id) => setSelectedCustomer(id)}
+              onSearch={handleSearch}
+            />
+          )}
 
           {/* Filter type: aylıq/illik */}
           <div className="dropdown">

@@ -18,7 +18,6 @@ const STORAGE_KEY_END = 'purchaseTableEndDate';
 
 const PurchaseTableEnd = () => {
 
-    // ================== STATE: PAGE + SEARCH + DATES ==================
     const [currentPage, setCurrentPage] = useState(() => {
         const saved = localStorage.getItem(STORAGE_KEY_PAGE);
         return saved ? Number(saved) : 0;
@@ -40,8 +39,6 @@ const PurchaseTableEnd = () => {
     const dispatch = useDispatch();
     const { purchaseListList, count } = useSelector(state => state.purchase);
     console.log(purchaseListList);
-    
-
 
     // ================== LOCALSTORAGE WRITE ==================
     useEffect(() => {
@@ -63,6 +60,7 @@ const PurchaseTableEnd = () => {
 
     // ================== HELPERS ==================
     const formatDate = (dateString) => {
+        if (!dateString) return '-';
         const date = new Date(dateString);
         return `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1)
             .toString()
@@ -78,6 +76,50 @@ const PurchaseTableEnd = () => {
         }
     };
 
+    // Ölçü vahidini göstərmək üçün
+    const getUnitDisplay = (item) => {
+        if (!item) return '-';
+        
+        const product = item.product || item;
+        
+        if (product.unit === 'kg') return 'Kq';
+        if (product.unit === 'metre') return 'Metr';
+        if (product.unit === 'piece') {
+            let display = 'Ədəd';
+            if (product.unit_weight) {
+                display += ` (${product.unit_weight} kq)`;
+            } else if (product.unit_length) {
+                display += ` (${product.unit_length} m)`;
+            }
+            return display;
+        }
+        return '-';
+    };
+
+    // Ümumi çəki/uzunluq hesabla
+    const getTotalMeasure = (item) => {
+        if (!item || !item.product) return null;
+        
+        const product = item.product;
+        const amount = parseFloat(item.amount) || 0;
+        
+        if (product.unit === 'piece') {
+            if (product.unit_weight) {
+                return `${(amount * product.unit_weight).toFixed(2)} kq`;
+            }
+            if (product.unit_length) {
+                return `${(amount * product.unit_length).toFixed(2)} m`;
+            }
+            return null;
+        }
+        if (product.unit === 'kg') {
+            return `${amount.toFixed(2)} kq`;
+        }
+        if (product.unit === 'metre') {
+            return `${amount.toFixed(2)} m`;
+        }
+        return null;
+    };
 
     // ================== FETCH DATA ==================
     const fetchData = () => {
@@ -166,6 +208,8 @@ const PurchaseTableEnd = () => {
                             <th>Tədarükçü/Müştəri</th>
                             <th>Alış Tarixi</th>
                             <th>Miqdar</th>
+                            {/* <th>Ölçü Vahidi</th>
+                            <th>Ümumi</th> */}
                             <th>Alış Qiyməti</th>
                             <th>Maya Dəyəri</th>
                             <th>Satış Qiyməti</th>
@@ -188,16 +232,34 @@ const PurchaseTableEnd = () => {
 
                                 <td>{item?.supplier || '-'}</td>
                                 <td>{formatDate(item?.date)}</td>
-                                <td>{item.amount}</td>
-                                <td>{Math.round(item.purchase_price * 100) / 100} {getCurrencySymbol(item.currency)}</td>
-                                <td>{Math.round(item.cost_price * 100) / 100}₼</td>
-                                <td>{Math.round(item.price * 100) / 100}₼</td>
-                                <td>{Math.round(item.discount_price * 100) / 100}₼</td>
+                                <td>{item?.amount || '-'}</td>
+                                {/* <td>{getUnitDisplay(item)}</td>
+                                <td>{getTotalMeasure(item) || '-'}</td> */}
+                                <td>
+                                    {item?.purchase_price ? 
+                                        `${Math.round(item.purchase_price * 100) / 100} ${getCurrencySymbol(item.currency)}` 
+                                        : '-'}
+                                </td>
+                                <td>
+                                    {item?.cost_price ? 
+                                        `${Math.round(item.cost_price * 100) / 100} ₼` 
+                                        : '-'}
+                                </td>
+                                <td>
+                                    {item?.price ? 
+                                        `${Math.round(item.price * 100) / 100} ₼` 
+                                        : '-'}
+                                </td>
+                                <td>
+                                    {item?.discount_price ? 
+                                        `${Math.round(item.discount_price * 100) / 100} ₼` 
+                                        : '-'}
+                                </td>
 
                                 <td>
-                                    {item.status === 'A'
+                                    {item?.status === 'A'
                                         ? <span style={{ color: 'green' }}>Anbarda</span>
-                                        : item.status === 'G'
+                                        : item?.status === 'G'
                                             ? <span style={{ color: 'orange' }}>Gözləyir</span>
                                             : '-'}
                                 </td>

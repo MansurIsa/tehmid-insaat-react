@@ -1,7 +1,7 @@
 import React from "react";
 import FilterProductCard from "./FilterProductCard";
 
-const FilterProductsContainer = ({ productsList,newPr }) => {
+const FilterProductsContainer = ({ productsList, newPr }) => {
   console.log(productsList);
   
   return (

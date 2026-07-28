@@ -59,3 +59,59 @@
   background-color: var(--yellow);
  
 }
+
+
+
+/* products.css faylına əlavə edin */
+
+.packaged_section {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.packaged_section .checkbox_label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.packaged_section .checkbox_label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.packaged_section .helper_text {
+    font-size: 12px;
+    color: #666;
+}
+
+.packaged_section .pack_size_group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.packaged_section .pack_size_group input {
+    width: 120px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.packaged_section .pack_size_group .unit_label {
+    color: #555;
+}
+
+.packaged_section .pack_size_group .info_text {
+    font-size: 12px;
+    color: #888;
+    margin-left: 10px;
+}

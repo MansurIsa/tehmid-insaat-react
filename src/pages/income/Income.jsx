@@ -36,7 +36,7 @@ const Income = () => {
 
   return (
     <AdminLayout adminHeader="Kassa">
-      <IncomeTableHead paymentList={paymentList} />
+      <IncomeTableHead paymentList={paymentList?.results} />
       <AdminBigComponentHeader
         adminHeader="Ödəniş cədvəli"
         hideShowBtn={true}
@@ -50,6 +50,7 @@ const Income = () => {
         fetchPayments={fetchPayments}
         searchTerm={searchTerm}
       />
+      
       {incomeAddPaymentModal && <IncomeAddPaymentModal />}
       {incomeUpdatePaymentModal && <IncomeUpdatePaymentModal />}
       {incomeDeletePaymentModal && <IncomeDeletePaymentModal />}

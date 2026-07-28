@@ -3,10 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import ReactPaginate from "react-paginate";
 import { getMostDebtDashboardList } from "../../../../actions/dashboardAction/dashboardAction";
 import AdminBigComponentHeader from "../../adminBigComponentHeader/AdminBigComponentHeader";
+import { getTotalCustomerDebtList } from "../../../../actions/loginAction/loginAction";
 
 const DashboardThirdLeft = () => {
   const dispatch = useDispatch();
   const { mostDebtObj, count1 } = useSelector((state) => state.dashboard);
+  const { customerDebtObj } = useSelector((state) => state.login);
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -14,6 +16,7 @@ const DashboardThirdLeft = () => {
 
   useEffect(() => {
     dispatch(getMostDebtDashboardList({ page: currentPage }));
+    dispatch(getTotalCustomerDebtList())
   }, [dispatch, currentPage]);
 
   const handlePageClick = (event) => {
@@ -110,6 +113,10 @@ const DashboardThirdLeft = () => {
           activeClassName={"dashboard_end_active"}
         />
       )}
+
+      <p>Ümumi Müştəri Borcu: {customerDebtObj?.total_customer_debt}₼</p>
+
+
     </div>
   );
 };

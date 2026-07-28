@@ -16,6 +16,30 @@ const FilterProductCard = ({ data, newPr }) => {
 
   const isPiece = data?.unit === "piece";
 
+  // ================== VAHİD FUNKSİYALARI ==================
+  
+  // Ölçü vahidini göstərmək üçün (əd. -> ədəd)
+  const getUnitDisplay = () => {
+    if (!data) return '-';
+    
+    if (data.unit === 'kg') return 'kq';
+    if (data.unit === 'metre') return 'm';
+    if (data.unit === 'piece') {
+      if (data.unit_weight) {
+        return `ədəd (${data.unit_weight} kq/ədəd)`;
+      }
+      if (data.unit_length) {
+        return `ədəd (${data.unit_length} m/ədəd)`;
+      }
+      return 'ədəd';
+    }
+    return '-';
+  };
+
+  const unitDisplay = getUnitDisplay();
+
+  // ================== SƏBƏT ƏMƏLİYYATLARI ==================
+
   const addToCart = () => {
     if (!accessToken) {
       navigate("/login");
@@ -51,7 +75,7 @@ const FilterProductCard = ({ data, newPr }) => {
     if (isPiece) {
       setQuantity(String(current + 1));
     } else {
-      setQuantity(String((current + 1).toFixed(2).replace(/\.00$/, "")));
+      setQuantity(String((current + 0.5).toFixed(2).replace(/\.00$/, "")));
     }
   };
 
@@ -67,7 +91,7 @@ const FilterProductCard = ({ data, newPr }) => {
     if (isPiece) {
       setQuantity(String(Math.max(current - 1, 0)));
     } else {
-      const value = Math.max(current - 1, 0);
+      const value = Math.max(current - 0.5, 0);
       setQuantity(String(value.toFixed(2).replace(/\.00$/, "")));
     }
   };
@@ -86,12 +110,10 @@ const FilterProductCard = ({ data, newPr }) => {
         setError("Ədəd ilə satılan məhsullar üçün yalnız tam ədəd daxil edə bilərsiniz.");
         return;
       }
-
       value = value.replace(/^0+(?=\d)/, "");
       setQuantity(value);
     } else {
       if (!/^\d*\.?\d*$/.test(value)) return;
-
       value = value.replace(/^0+(?=\d)/, "");
       setQuantity(value);
     }
@@ -100,6 +122,32 @@ const FilterProductCard = ({ data, newPr }) => {
   const goToDetail = () => {
     navigate(`/products/${data?.id}`);
   };
+
+  // Stok statusu (sadəcə status, say göstərilmir)
+  const getStockStatus = () => {
+    if (!accessToken) return null;
+    
+    const amount = parseFloat(data?.amount) || 0;
+    
+    if (amount > 5) {
+      return {
+        text: "Stokda var",
+        className: "filter_product_card_content_stock_green"
+      };
+    } else if (amount > 0 && amount <= 5) {
+      return {
+        text: "Stokda tükənir",
+        className: "filter_product_card_content_stock_orange"
+      };
+    } else {
+      return {
+        text: "Stokda bitib",
+        className: "filter_product_card_content_stock_red"
+      };
+    }
+  };
+
+  const stockStatus = getStockStatus();
 
   return (
     <div className="filter_product_card">
@@ -113,21 +161,10 @@ const FilterProductCard = ({ data, newPr }) => {
         <img src={data?.image} alt={data?.name} loading="lazy" />
 
         <div className="filter_product_card_content">
-          {accessToken && (
-            <span
-              className={
-                +data?.amount > 20
-                  ? "filter_product_card_content_stock_green"
-                  : +data?.amount > 0 && +data?.amount < 21
-                  ? "filter_product_card_content_stock_orange"
-                  : "filter_product_card_content_stock_red"
-              }
-            >
-              {+data?.amount > 20
-                ? "Stokda var"
-                : +data?.amount > 0 && +data?.amount < 21
-                ? "Stokda tükənir"
-                : "Stokda bitib"}
+          {/* Stok statusu - sadəcə status */}
+          {accessToken && stockStatus && (
+            <span className={stockStatus.className}>
+              {stockStatus.text}
             </span>
           )}
 
@@ -137,6 +174,21 @@ const FilterProductCard = ({ data, newPr }) => {
             Məhsul kodu: {data?.article_names?.[0] || "—"}
           </span>
 
+          {/* Vahid məlumatı */}
+          <p className="filter_product_card_content">
+            Ölçü vahidi:
+            <span
+              style={{
+                fontWeight: "bold",
+                color: "var(--red)",
+              }}
+            >
+              {" "}
+              {unitDisplay}
+            </span>
+          </p>
+
+          {/* Qiymət */}
           <div>
             {accessToken && userObj?.status === "S" && (
               <span>{data?.price} AZN</span>
@@ -159,25 +211,6 @@ const FilterProductCard = ({ data, newPr }) => {
           </div>
         </div>
       </div>
-
-      <p className="filter_product_card_content">
-        Ölçü vahidi:
-        <span
-          style={{
-            fontWeight: "bold",
-            color: "var(--red)",
-          }}
-        >
-          {" "}
-          {data?.unit === "piece"
-            ? "ədəd"
-            : data?.unit === "kg"
-            ? "kiloqram"
-            : data?.unit === "metre"
-            ? "metr"
-            : ""}
-        </span>
-      </p>
 
       <div className="inc_dec_pr">
         <button type="button" onClick={handleDecrement}>

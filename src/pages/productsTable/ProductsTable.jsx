@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import SearchInpMain from '../../components/admin/searchInpMain/SearchInpMain';
 import ProductsTableEnd from '../../components/admin/productsTableEnd/ProductsTableEnd';
 import { useDispatch, useSelector } from 'react-redux';
-import {  getProductsList } from '../../actions/productsAction/productsAction';
+import { getProductsList } from '../../actions/productsAction/productsAction';
 import ProductsDeleteModal from '../../components/admin/modals/ProductsDeleteModal';
 import ReactPaginate from 'react-paginate';
 
@@ -15,7 +15,6 @@ const ITEMS_PER_PAGE = 10;
 // LocalStorage keys
 const STORAGE_KEYS = {
   SEARCH_QUERY: 'products_search_query',
-  // ACTIVE_BRAND: 'products_active_brand',
   CURRENT_PAGE: 'products_current_page'
 };
 
@@ -32,7 +31,6 @@ const ProductsTable = () => {
       const item = localStorage.getItem(key);
       if (item === null || item === 'null') return defaultValue;
       
-      // JSON parse etməyə çalış, uğursuz olarsa string kimi qaytar
       try {
         return JSON.parse(item);
       } catch {
@@ -50,7 +48,6 @@ const ProductsTable = () => {
       if (value === null || value === undefined || value === '') {
         localStorage.removeItem(key);
       } else {
-        // Hər zaman string kimi saxla
         localStorage.setItem(key, value.toString());
       }
     } catch (error) {
@@ -63,10 +60,6 @@ const ProductsTable = () => {
     return getFromLocalStorage(STORAGE_KEYS.SEARCH_QUERY, '');
   });
   
-  // const [activeBrandId, setActiveBrandId] = useState(() => {
-  //   return getFromLocalStorage(STORAGE_KEYS.ACTIVE_BRAND, null);
-  // });
-  
   const [currentPage, setCurrentPage] = useState(() => {
     const savedPage = getFromLocalStorage(STORAGE_KEYS.CURRENT_PAGE, '1');
     return parseInt(savedPage) || 1;
@@ -74,7 +67,6 @@ const ProductsTable = () => {
 
   // İlk load
   useEffect(() => {
-    // dispatch(getBrandList());
     fetchProducts(currentPage, searchQuery || '');
   }, [dispatch]);
 
@@ -88,10 +80,8 @@ const ProductsTable = () => {
   const handleClick = () => {
     // Yeni məhsul əlavə edərkən state'ləri təmizlə
     saveToLocalStorage(STORAGE_KEYS.SEARCH_QUERY, '');
-    // saveToLocalStorage(STORAGE_KEYS.ACTIVE_BRAND, '');
     saveToLocalStorage(STORAGE_KEYS.CURRENT_PAGE, '1');
     setSearchQuery('');
-    // setActiveBrandId(null);
     setCurrentPage(1);
     navigate("/new-products");
   };
@@ -100,15 +90,8 @@ const ProductsTable = () => {
     setSearchQuery(query);
     saveToLocalStorage(STORAGE_KEYS.SEARCH_QUERY, query);
     saveToLocalStorage(STORAGE_KEYS.CURRENT_PAGE, '1');
-    // fetchProducts(1, query, activeBrandId || '');
+    fetchProducts(1, query);
   };
-
-  // const handleBrandFilter = (brandId) => {
-  //   setActiveBrandId(brandId);
-  //   saveToLocalStorage(STORAGE_KEYS.ACTIVE_BRAND, brandId || '');
-  //   saveToLocalStorage(STORAGE_KEYS.CURRENT_PAGE, '1');
-  //   fetchProducts(1, searchQuery, brandId || '');
-  // };
 
   const handlePageClick = (event) => {
     const selectedPage = event.selected + 1;
@@ -128,25 +111,6 @@ const ProductsTable = () => {
       />
 
       <SearchInpMain onSearch={handleSearch} inputValue={searchQuery} />
-
-      {/* <div className="admin_container brand_list_buttons">
-        <button
-          onClick={() => handleBrandFilter(null)}
-          className={activeBrandId === null || activeBrandId === '' ? 'active' : ''}
-        >
-          Bütün markalar
-        </button>
-
-        {brandList?.map((data) => (
-          <button
-            key={data.id}
-            onClick={() => handleBrandFilter(data.name)}
-            className={activeBrandId === data.name ? 'active' : ''}
-          >
-            {data.name}
-          </button>
-        ))}
-      </div> */}
 
       <ProductsTableEnd productsList={productsList} />
 

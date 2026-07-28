@@ -3,7 +3,7 @@ import AdminLayout from '../../layouts/adminLayout/AdminLayout';
 import './css/purchase.css';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import {  getCategoryList, getProductsList } from '../../actions/productsAction/productsAction';
+import { getCategoryList, getProductsList } from '../../actions/productsAction/productsAction';
 import { addPurchase } from '../../actions/purchaseAction/purchaseAction';
 import { getSupplierList } from '../../actions/loginAction/loginAction';
 import CustomSupplierSelect from './CustomSupplierSelect';
@@ -20,12 +20,16 @@ const NewPurchase = () => {
     const [productsData, setProductsData] = useState([
         {
             productId: '',
-            productData: null, // Əlavə etdik: bütün məhsul məlumatlarını saxlayacaq
+            productData: null,
             quantity: '',
             costPrice: '',
             purchasePriceValue: '',
             salePrice: '',
-            discountPrice: ''
+            discountPrice: '',
+            // Yeni sahələr - məhsul seçildikdə avtomatik dolacaq
+            unit: '',
+            unit_weight: '',
+            unit_length: '',
         }
     ]);
 
@@ -33,9 +37,9 @@ const NewPurchase = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        // dispatch(getBrandList());
         dispatch(getCategoryList());
         dispatch(getSupplierList());
+        dispatch(getProductsList());
     }, [dispatch]);
 
     const { productsList } = useSelector(state => state.products);
@@ -51,7 +55,10 @@ const NewPurchase = () => {
                 costPrice: '',
                 purchasePriceValue: '',
                 salePrice: '',
-                discountPrice: ''
+                discountPrice: '',
+                unit: '',
+                unit_weight: '',
+                unit_length: '',
             }
         ]);
     };
@@ -73,10 +80,14 @@ const NewPurchase = () => {
         updated[index].purchasePriceValue = product.purchase_price || '';
         updated[index].salePrice = product.price || '';
         updated[index].discountPrice = product.discount_price || '';
-        updated[index].quantity = product.amount > 0 ? '1' : ''; // Əgər varsa 1, yoxsa boş
+        updated[index].quantity = product.amount > 0 ? '1' : '';
+        
+        // Yeni: məhsulun vahid məlumatlarını əlavə et
+        updated[index].unit = product.unit || 'piece';
+        updated[index].unit_weight = product.unit_weight || '';
+        updated[index].unit_length = product.unit_length || '';
         
         setProductsData(updated);
-        
     };
 
     const handleRemoveProduct = (index) => {
@@ -86,8 +97,37 @@ const NewPurchase = () => {
         setProductsData(updated);
     };
 
+    // Məhsulun vahidini göstərmək üçün funksiya
+    const getUnitDisplay = (item) => {
+        if (!item.unit) return '';
+        
+        if (item.unit === 'kg') return 'Kiloqram';
+        if (item.unit === 'metre') return 'Metr';
+        if (item.unit === 'piece') {
+            let display = 'Ədəd';
+            if (item.unit_weight) {
+                display += ` (${item.unit_weight} kq)`;
+            } else if (item.unit_length) {
+                display += ` (${item.unit_length} m)`;
+            }
+            return display;
+        }
+        return item.unit;
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        // Miqdarları yoxla - əgər unit 'piece' dirsə, tam ədəd olmalıdır
+        for (let item of productsData) {
+            if (item.unit === 'piece' && item.quantity) {
+                const qty = parseFloat(item.quantity);
+                if (!Number.isInteger(qty)) {
+                    alert(`"${item.productData?.name || 'Məhsul'}" ədədlə satılır, kəsr ədəd daxil edilə bilməz.`);
+                    return;
+                }
+            }
+        }
 
         const payload = {
             supplier: generalInfo.supplierId ? +generalInfo.supplierId : null,
@@ -95,11 +135,13 @@ const NewPurchase = () => {
             status: generalInfo.status,
             currency: generalInfo.currency,
             products: productsData.map(p => +p.productId),
-            amounts: productsData.map(p => +p.quantity),
-            purchase_prices: productsData.map(p => parseFloat(p.purchasePriceValue)),
-            cost_prices: productsData.map(p => parseFloat(p.costPrice)),
-            prices: productsData.map(p => parseFloat(p.salePrice)),
-            discount_prices: productsData.map(p => parseFloat(p.discountPrice))
+            amounts: productsData.map(p => parseFloat(p.quantity) || 0),
+            purchase_prices: productsData.map(p => parseFloat(p.purchasePriceValue) || 0),
+            cost_prices: productsData.map(p => parseFloat(p.costPrice) || 0),
+            prices: productsData.map(p => parseFloat(p.salePrice) || 0),
+            discount_prices: productsData.map(p => parseFloat(p.discountPrice) || 0),
+            // Yeni: vahid məlumatlarını da göndər
+            units: productsData.map(p => p.unit || 'piece'),
         };
 
         console.log("Göndərilən Payload:", payload);
@@ -201,6 +243,25 @@ const NewPurchase = () => {
                                 />
                             </div>
 
+                            {/* Məhsulun vahid məlumatını göstər */}
+                            {item.productData && (
+                                <div style={{ 
+                                    padding: '8px 12px', 
+                                    backgroundColor: '#e8f0fe', 
+                                    borderRadius: '4px', 
+                                    marginBottom: '10px',
+                                    fontSize: '14px',
+                                    color: '#333'
+                                }}>
+                                    <strong>Ölçü vahidi:</strong> {getUnitDisplay(item)}
+                                    {item.unit === 'piece' && (item.unit_weight || item.unit_length) && (
+                                        <span style={{ marginLeft: '10px', color: '#666', fontSize: '13px' }}>
+                                            {item.unit_weight ? `1 ədəd = ${item.unit_weight} kq` : `1 ədəd = ${item.unit_length} m`}
+                                        </span>
+                                    )}
+                                </div>
+                            )}
+
                             <div className='flex_purchase_cont'>
                                 <div className="form_group">
                                     <label>Miqdar</label>
@@ -208,9 +269,15 @@ const NewPurchase = () => {
                                         type="number"
                                         className="form_input"
                                         placeholder="Miqdar"
+                                        step={item.unit === 'piece' ? '1' : '0.01'}
                                         value={item.quantity}
                                         onChange={(e) => handleProductChange(index, 'quantity', e.target.value)}
                                     />
+                                    {item.unit === 'piece' && (
+                                        <small style={{ color: '#666', display: 'block', marginTop: '4px' }}>
+                                            Tam ədəd daxil edin
+                                        </small>
+                                    )}
                                 </div>
 
                                 <div className="form_group">

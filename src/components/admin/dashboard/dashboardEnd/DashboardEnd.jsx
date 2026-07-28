@@ -87,10 +87,10 @@ const DashboardEnd = () => {
               let statusText = '';
               let statusClass = '';
 
-              if (item.amount === 0) {
+              if (Number(item.amount) === 0.00) {
                 statusText = 'Bitib';
                 statusClass = 'over';
-              } else if (item.amount <= 20) {
+              } else if (Number(item.amount) <= 5 && Number(item.amount) > 0) {
                 statusText = 'Tükənir';
                 statusClass = 'runs_out';
               } else {

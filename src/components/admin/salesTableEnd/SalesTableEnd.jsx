@@ -52,6 +52,9 @@ const SalesTableEnd = () => {
     const dispatch = useDispatch();
     const { salesList, count } = useSelector(state => state.sales);
 
+    console.log(salesList);
+    
+
     // --- EFFECTS ---
     useEffect(() => {
         fetchSales(currentPage, searchQuery, minAmount, maxAmount, startDate, endDate);

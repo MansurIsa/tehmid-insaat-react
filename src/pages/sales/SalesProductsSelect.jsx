@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import AdminLayout from "../../layouts/adminLayout/AdminLayout";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {  getCategoryList } from "../../actions/productsAction/productsAction";
+import { getCategoryList } from "../../actions/productsAction/productsAction";
 import { getStockList } from "../../actions/stockActions/stockActions";
 import { getUsersList } from "../../actions/loginAction/loginAction";
 import { addSale } from "../../actions/salesAction/salesAction";
@@ -16,7 +16,6 @@ const SalesProductsSelect = () => {
   const { stockList, count } = useSelector((state) => state.stock);
   const { usersList, customerFactureList } = useSelector((state) => state.login);
   const { plusSalesObj } = useSelector((state) => state.sales);
-  // const { brandList } = useSelector((state) => state.products);
 
   const [selectedProductIds, setSelectedProductIds] = useState([]);
   const [quantityValues, setQuantityValues] = useState({});
@@ -27,12 +26,12 @@ const SalesProductsSelect = () => {
   const [selectedDateTime, setSelectedDateTime] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  // const [activeBrandId, setActiveBrandId] = useState(null);
   const searchTimeout = useRef(null);
   const itemsPerPage = 10;
 
+  console.log(stockList);
+
   useEffect(() => {
-    // dispatch(getBrandList());
     dispatch(getCategoryList());
     dispatch(getUsersList());
     
@@ -41,20 +40,12 @@ const SalesProductsSelect = () => {
     setSelectedDateTime(formattedDateTime);
   }, [dispatch]);
 
-  // Axtarış və marka filtrini birlikdə API-ə göndər
+  // Axtarış
   const fetchStock = (page = 1, search = "") => {
-    let searchQuery = search;
-    
-    // Əgər marka seçilibsə, onu da axtarış sətrinə əlavə et
-    // if (brand && brand !== null) {
-    //   searchQuery = search ? `${search} ${brand}` : brand;
-    // }
-    
-    dispatch(getStockList(page, searchQuery));
+    dispatch(getStockList(page, search));
     setCurrentPage(page);
   };
 
-  // searchTerm və ya activeBrandId dəyişdikdə avtomatik fetch et
   useEffect(() => {
     fetchStock(1, searchTerm);
   }, [searchTerm]);
@@ -82,18 +73,74 @@ const SalesProductsSelect = () => {
   const handleStockSearch = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
-    // Debounce - istəyə bağlı
     if (searchTimeout.current) clearTimeout(searchTimeout.current);
-    searchTimeout.current = setTimeout(() => {
-      // searchTerm dəyişdiyi üçün useEffect avtomatik fetch edəcək
-    }, 300);
+    searchTimeout.current = setTimeout(() => {}, 300);
   };
 
-  // const handleBrandFilter = (brandName) => {
-  //   setActiveBrandId(brandName);
-  //   setCurrentPage(1);
-  //   // activeBrandId dəyişdiyi üçün useEffect avtomatik fetch edəcək
-  // };
+  // ================== YENİ FUNKSİYALAR ==================
+  
+  // Məhsulun vahid məlumatını göstərmək üçün
+  const getUnitDisplay = (product) => {
+    if (!product) return '-';
+    
+    if (product.unit === 'kg') return 'kq';
+    if (product.unit === 'metre') return 'm';
+    if (product.unit === 'piece') {
+      let display = 'əd.';
+      if (product.unit_weight) {
+        display += ` (${product.unit_weight} kq/əd.)`;
+      } else if (product.unit_length) {
+        display += ` (${product.unit_length} m/əd.)`;
+      }
+      return display;
+    }
+    return '-';
+  };
+
+  // Məhsulun ümumi çəkisini/uzunluğunu hesablamaq üçün
+  const getTotalMeasure = (product, amount) => {
+    if (!product) return 0;
+    
+    const qty = parseFloat(amount) || 0;
+    
+    if (product.unit === 'piece') {
+      if (product.unit_weight) {
+        return qty * product.unit_weight;
+      }
+      if (product.unit_length) {
+        return qty * product.unit_length;
+      }
+      return qty;
+    }
+    if (product.unit === 'kg' || product.unit === 'metre') {
+      return qty;
+    }
+    return qty;
+  };
+
+  // Vahidə görə çarpanı hesablamaq üçün
+  const getMultiplier = (product) => {
+    if (!product) return 1;
+    
+    if (product.unit === 'piece') {
+      if (product.unit_weight) {
+        return parseFloat(product.unit_weight);
+      }
+      if (product.unit_length) {
+        return parseFloat(product.unit_length);
+      }
+      return 1;
+    }
+    return 1;
+  };
+
+  // Məhsulun anbardakı ümumi miqdarını (vahidlə) hesablamaq
+  const getTotalStockInUnit = (product, stockAmount) => {
+    const multiplier = getMultiplier(product);
+    return parseFloat(stockAmount) * multiplier;
+  };
+
+  // ================== HESABLAMALAR ==================
 
   const calculateTotalStock = (productId) => {
     return initialStockValues[productId] || 0;
@@ -103,11 +150,21 @@ const SalesProductsSelect = () => {
     return calculateTotalStock(productId) - (+quantityValues[productId] || 0);
   };
 
-  const hasInsufficientStock = (productId, quantity, status) => {
+  const hasInsufficientStock = (productId, quantity, status, product) => {
     if (status !== "S") return false;
+    
+    const qty = parseFloat(quantity) || 0;
     const totalStock = calculateTotalStock(productId);
-    return +quantity > totalStock;
+    
+    // Əgər məhsulun unit_weight və ya unit_length varsa, onu da nəzərə al
+    const multiplier = getMultiplier(product);
+    const totalStockInUnit = totalStock * multiplier;
+    const requestedInUnit = qty * multiplier;
+    
+    return requestedInUnit > totalStockInUnit;
   };
+
+  // ================== ROW TOGGLE ==================
 
   const toggleRow = (productId, product, stockAmount) => {
     const isSelected = selectedProductIds.includes(productId);
@@ -140,12 +197,17 @@ const SalesProductsSelect = () => {
       setQuantityValues((prev) => ({ ...prev, [productId]: currentQuantity }));
       setPriceValues((prev) => ({ ...prev, [productId]: product?.price }));
       setStatusValues((prev) => ({ ...prev, [productId]: "G" }));
+      
+      // İlkin stok dəyərini saxla (vahidlə)
+      const totalStock = parseFloat(stockAmount) || 0;
       setInitialStockValues((prev) => ({
         ...prev,
-        [productId]: stockAmount + currentQuantity,
+        [productId]: totalStock,
       }));
     }
   };
+
+  // ================== HANDLE DƏYİŞİKLİKLƏR ==================
 
   const handleQuantityChange = (productId, value) => {
     const numericValue = value.replace(/^0+/, "");
@@ -154,29 +216,23 @@ const SalesProductsSelect = () => {
     }
   };
 
-  // const handlePriceChange = (productId, value) => {
-  //   const val = +value;
-  //   if (val >= 0) setPriceValues((prev) => ({ ...prev, [productId]: val }));
-  // };
-
   const handlePriceChange = (productId, value) => {
-  // boş input icazəli olmalıdır
-  if (value === "") {
-    setPriceValues((prev) => ({ ...prev, [productId]: "" }));
-    return;
-  }
-
-  // yalnız rəqəm icazə
-  if (!isNaN(value)) {
-    setPriceValues((prev) => ({ ...prev, [productId]: value }));
-  }
-};
+    if (value === "") {
+      setPriceValues((prev) => ({ ...prev, [productId]: "" }));
+      return;
+    }
+    if (!isNaN(value)) {
+      setPriceValues((prev) => ({ ...prev, [productId]: value }));
+    }
+  };
 
   const handleStatusChange = (productId, value) => {
     setStatusValues((prev) => ({ ...prev, [productId]: value }));
   };
 
   const handleDateChange = (e) => setSelectedDateTime(e.target.value);
+
+  // ================== SAVE ==================
 
   const handleSave = () => {
     if (!selectedCustomerId || !selectedDateTime) {
@@ -194,13 +250,23 @@ const SalesProductsSelect = () => {
       const status = statusValues[productId] || "G";
       const totalStock = calculateTotalStock(productId);
       
-      if (status === "S" && quantity > totalStock) {
-        hasError = true;
-        invalidProducts.push({
-          name: product?.name,
-          available: totalStock,
-          requested: quantity
-        });
+      // Stok yoxlaması - vahidə görə
+      if (status === "S") {
+        const multiplier = getMultiplier(product);
+        const totalStockInUnit = totalStock * multiplier;
+        const requestedInUnit = quantity * multiplier;
+        
+        if (requestedInUnit > totalStockInUnit) {
+          hasError = true;
+          invalidProducts.push({
+            name: product?.name,
+            available: totalStock,
+            requested: quantity,
+            unit: product?.unit,
+            unit_weight: product?.unit_weight,
+            unit_length: product?.unit_length,
+          });
+        }
       }
 
       return {
@@ -212,9 +278,14 @@ const SalesProductsSelect = () => {
     });
 
     if (hasError) {
-      invalidProducts.forEach((p) =>
-        toast.error(`Anbarda ${p.name} üçün yalnız ${p.available} ədəd mövcuddur. Siz ${p.requested} ədəd daxil etmisiniz.`)
-      );
+      invalidProducts.forEach((p) => {
+        const unitDisplay = p.unit === 'piece' 
+          ? (p.unit_weight ? `${p.unit_weight} kq/əd.` : p.unit_length ? `${p.unit_length} m/əd.` : 'əd.')
+          : p.unit;
+        toast.error(
+          `Anbarda ${p.name} üçün yalnız ${p.available} ${unitDisplay} mövcuddur. Siz ${p.requested} ${unitDisplay} daxil etmisiniz.`
+        );
+      });
       return;
     }
 
@@ -238,6 +309,8 @@ const SalesProductsSelect = () => {
 
   const returnSales = () => navigate("/sales");
 
+  // ================== EFFECTS ==================
+
   useEffect(() => {
     if (plusSalesObj && Object.keys(plusSalesObj).length > 0 && customerFactureList?.salelist_sales?.length > 0) {
       setSelectedCustomerId(customerFactureList.customer?.toString() || "");
@@ -259,7 +332,7 @@ const SalesProductsSelect = () => {
         statuses[s.product.id] = s.status;
         const stockItem = stockList?.find((item) => item.product.id === s.product.id);
         if (stockItem) {
-          initialStocks[s.product.id] = stockItem.amount + s.amount;
+          initialStocks[s.product.id] = parseFloat(stockItem.amount) + parseFloat(s.amount);
         }
       });
 
@@ -281,6 +354,8 @@ const SalesProductsSelect = () => {
   }, [selectedCustomerId, dispatch, plusSalesObj?.id]);
 
   const customer = usersList.find((u) => u.id.toString() === selectedCustomerId?.toString());
+
+  // ================== RENDER ==================
 
   return (
     <AdminLayout adminHeaderHide={true}>
@@ -315,26 +390,6 @@ const SalesProductsSelect = () => {
           </div>
         </div>
 
-        {/* MARKA FİLTERİ BÖLMƏSİ */}
-        {/* <div className="admin_container brand_list_buttons">
-          <button
-            onClick={() => handleBrandFilter(null)}
-            className={activeBrandId === null ? 'active' : ''}
-          >
-            Bütün markalar
-          </button>
-
-          {brandList?.map((data) => (
-            <button
-              key={data.id}
-              onClick={() => handleBrandFilter(data.name)}
-              className={activeBrandId === data.name ? 'active' : ''}
-            >
-              {data.name}
-            </button>
-          ))}
-        </div> */}
-
         {/* AXTARIŞ INPUTU */}
         <div className="admin_header_search project_container">
           <input
@@ -352,8 +407,7 @@ const SalesProductsSelect = () => {
                 <th className="number_table"></th>
                 <th>Məhsul Adı</th>
                 <th>Artikl</th>
-                {/* <th>Marka</th>
-                <th>Brend</th> */}
+                <th>Vahid</th>
                 <th>Qalan Say</th>
                 <th>Maya Dəyəri</th>
                 <th>Satış Qiyməti</th>
@@ -369,8 +423,14 @@ const SalesProductsSelect = () => {
                 const isSelected = selectedProductIds.includes(productId);
                 const quantity = quantityValues[productId] || "";
                 const status = statusValues[productId] || "G";
-                const hasStockError = hasInsufficientStock(productId, quantity, status);
+                const unitDisplay = getUnitDisplay(product);
                 const totalStock = calculateTotalStock(productId);
+                const hasStockError = hasInsufficientStock(productId, quantity, status, product);
+                
+                // Ümumi çəki/uzunluq hesabla
+                const totalMeasure = getTotalMeasure(product, totalStock);
+                const requestedMeasure = getTotalMeasure(product, quantity);
+                const multiplier = getMultiplier(product);
 
                 return (
                   <tr key={productId}>
@@ -381,19 +441,23 @@ const SalesProductsSelect = () => {
                         onChange={() => toggleRow(productId, product, item.amount)}
                       />
                     </td>
-                    <td>{product?.name} </td>
+                    <td>{product?.name}</td>
                     <td>
                       {product?.articles?.map((a) => a.name).join(", ") || "-"}
                     </td>
-                    {/* <td>{product?.brand?.name || "-"}</td>
-                    <td>{product?.store?.name || "-"}</td> */}
+                    <td>{unitDisplay}</td>
                     <td>
-                      {item.amount}
-                      {isSelected && (
-                        <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
-                          (Ümumi: {totalStock})
-                        </div>
-                      )}
+                      <div>
+                        <strong>{item.amount}</strong>
+                        {isSelected && (
+                          <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
+                            Ümumi: {totalMeasure.toFixed(2)} 
+                            {product.unit === 'piece' && (product.unit_weight || product.unit_length) 
+                              ? (product.unit_weight ? ' kq' : ' m') 
+                              : product.unit === 'kg' ? ' kq' : product.unit === 'metre' ? ' m' : ''}
+                          </div>
+                        )}
+                      </div>
                     </td>
                     <td>{product?.cost_price} ₼</td>
                     <td>
@@ -412,13 +476,23 @@ const SalesProductsSelect = () => {
                     <td>{product?.discount_price ?? "-"} ₼</td>
                     <td>
                       {isSelected && (
-                        <input
-                          type="number"
-                          value={quantity}
-                          onChange={(e) => handleQuantityChange(productId, e.target.value)}
-                          onWheel={(e) => e.target.blur()}
-                          className={`quantity_input ${hasStockError ? "input-error" : ""}`}
-                        />
+                        <div>
+                          <input
+                            type="number"
+                            value={quantity}
+                            onChange={(e) => handleQuantityChange(productId, e.target.value)}
+                            onWheel={(e) => e.target.blur()}
+                            className={`quantity_input ${hasStockError ? "input-error" : ""}`}
+                          />
+                          {isSelected && quantity && (
+                            <div style={{ fontSize: '11px', color: '#888', marginTop: '2px' }}>
+                              {requestedMeasure.toFixed(2)} 
+                              {product.unit === 'piece' && (product.unit_weight || product.unit_length) 
+                                ? (product.unit_weight ? ' kq' : ' m') 
+                                : product.unit === 'kg' ? ' kq' : product.unit === 'metre' ? ' m' : ''}
+                            </div>
+                          )}
+                        </div>
                       )}
                     </td>
                     <td>
@@ -441,12 +515,8 @@ const SalesProductsSelect = () => {
           {/* MƏHSUL TAPILMADI MESAJI */}
           {stockList?.length === 0 && (
             <div className="no-products-message">
-              { searchTerm 
-                ? `"${searchTerm}"  uyğun məhsul tapılmadı`
-                : searchTerm 
-                // ? `"${activeBrandId}" markasına uyğun məhsul tapılmadı`
-                // : searchTerm 
-                ? `"${searchTerm}" axtarışına uyğun məhsul tapılmadı`
+              {searchTerm 
+                ? `"${searchTerm}" uyğun məhsul tapılmadı`
                 : "Heç bir məhsul tapılmadı"}
             </div>
           )}

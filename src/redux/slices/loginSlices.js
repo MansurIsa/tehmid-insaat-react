@@ -17,7 +17,8 @@ const LoginSlice = createSlice({
         next: null,
         previous: null,
         customerActionList: [],
-        customerRetriveObj: {}
+        customerRetriveObj: {},
+        customerDebtObj: {}
     },
     reducers: {
         getUserObjFunc: (state, action) => {
@@ -57,12 +58,15 @@ const LoginSlice = createSlice({
         },
         getCustomerRetriveFunc: (state,action)=>{
             state.customerRetriveObj=action.payload
-        }
+        },
+        getTotalCustomerDebtListFunc: (state,action)=>{
+            state.customerDebtObj=action.payload
+        },
     }
 });
 
 export const LoginReducer = LoginSlice.reducer;
 export const { getUserObjFunc, logoutFunc, getUsersListFunc, getCustomerMovementListFunc,
     getCustomerFactureListFunc, getSupplierListFunc, setUpdateCustomerObjFunc, customerUpdateModalFunc,
-    closeCustomerUpdateModalFunc,getCustomerActionRetriveListFunc,getCustomerRetriveFunc
+    closeCustomerUpdateModalFunc,getCustomerActionRetriveListFunc,getCustomerRetriveFunc,getTotalCustomerDebtListFunc
 } = LoginSlice.actions;
