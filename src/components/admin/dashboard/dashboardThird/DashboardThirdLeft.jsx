@@ -41,7 +41,7 @@ const DashboardThirdLeft = () => {
       <table className="custom_table">
         <thead>
           <tr>
-            <th>Ad</th>
+            <th>İstifadəçi adı</th>
             <th>Borc</th>
             <th>Telefon</th>
           </tr>
@@ -50,7 +50,7 @@ const DashboardThirdLeft = () => {
           {filteredData?.length > 0 ? (
             filteredData.map((item, index) => (
               <tr key={index}>
-                <td>{item.name}</td>
+                <td>{item.username}</td>
                 <td>{Math.round(item?.debt * 100) / 100} ₼ </td>
                 <td>{item.phone_number || "-"}</td>
               </tr>
