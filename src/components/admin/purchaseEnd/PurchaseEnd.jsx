@@ -291,9 +291,9 @@ const PurchaseEnd = ({ purchaseList, supplierPurchaseObj }) => {
                                     </td>
 
                                     {/* Normal görünüş üçün əlavə sütunlar */}
-                                    <td className="no-print">{product.cost_price} ₼</td>
-                                    <td className="no-print">{product.price} ₼</td>
-                                    <td className="no-print">{product.discount_price || '-'} ₼</td>
+                                    <td className="no-print">{item.cost_price} ₼</td>
+                                    <td className="no-print">{item.sale_price} ₼</td>
+                                    <td className="no-print">{item.discount_price || '-'} ₼</td>
                                     <td className={`status no-print ${statusClass}`}>{statusText}</td>
                                     <td className="no-print">{new Date(item.date).toLocaleDateString('az-AZ')}</td>
                                     <td className="no-print table_update">
